@@ -1,0 +1,338 @@
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Sili Fan">
+
+
+  <title>SERRF</title>
+
+  <link rel="shortcut icon" href="logo/logo - sm - inv - trans.png">
+
+
+  <link rel="stylesheet" href="theme/bootstrap.css" media="screen">
+  <link rel="stylesheet" href="theme/usebootstrap.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="local.css">
+  <link href="jquery-jvectormap-2.0.3.css" rel="stylesheet">
+  <!-- DataTable -->
+  <link href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>
+
+
+
+  <style type="text/css" media="all">
+    /*Change the size here*/
+    .tooltip-inner {width: 180px;}
+  </style>
+
+  <script src="jquery-3.2.1.min.js"></script>
+  <script src="bootstrap/bootstrap.min.js"></script>
+  <script src="bootstrap/usebootstrap.min.js"></script>
+  <script src="jquery-jvectormap-2.0.3.min.js"></script>
+  <script src="jquery-jvectormap-world-mill.min.js"></script>
+  <script src="pouchdb-6.3.4.min.js"></script>
+  <!--<script src="opencpu-0.5.js"></script>-->  <!-- plotly-->
+  <script src="underscore.min.js"></script>
+  <script src="plotly.min.js"></script>
+  <script src="myJS.min.js"></script>
+  <script src="jStat.min.js"></script>
+  <!--<script src="ml.min.js"></script>-->
+  <script src="parallel.min.js"></script>
+  <script src="jstree.min.js"></script>
+  <script src="lodash.min.js"></script>
+  <script type="text/javascript" src="jquery.dataTables.min.js"></script>
+  <script src="papaparse.min.js"></script>
+  <script src="jszip.min.js"></script>
+  <script src="FileSaver.min.js"></script>
+
+
+
+</head>
+
+<body style="background-color:#F9F4E5;">
+
+   <div class="navbar navbar-default navbar-fixed-top" style="background-color: #1A3E68;border-bottom:5px solid #DFC166; height:20px">
+      <div class="container">
+
+        <div class="navbar-collapse collapse" id="navbar-main">
+          <ul class="nav navbar-nav">
+            <li>
+              <a class="navigate" href="#" id='navintro'>Intro</a>
+            </li>
+            <!--<li>
+              <a class="navigate" href="#" id='navtutorial'>Tutorial</a>
+            </li>-->
+            <li>
+              <a class="navigate" href="#" id='navSERRF'><span class="rainbow">Use SERRF!</span></a>
+            </li>
+            <li>
+              <a class="navigate" href="#" id='navSERDA'>SERDA</a>
+            </li>
+          </ul>
+
+          <!--<ul class="nav navbar-nav navbar-right">
+            <li><a class="navigate" href="#" id='navstat'><i class="	fa fa-pie-chart"></i></a></li>
+          </ul>-->
+
+          <!--<ul class="nav navbar-nav navbar-right">
+            <li><a href="https://github.com/slfan2013/SERRFweb/issues" id='navbugs' target="_blank"  data-placement="bottom" data-toggle="tooltip" title="report error or issue"><i class="fa fa fa-bug"></i></a></li>
+          </ul>-->
+
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+<div class="container" style="background-color:white; padding-bottom:15px;">
+<div id = 'intro' class="tabcontent">
+<div class="page-header">
+
+        <div class="row">
+          <div class="col-lg-12">
+            <h1>Metabolomics Data Normalization</h1>
+            <p class="lead">Here is a collection of popular normalization methods for metabolomics dataset.</p>
+          </div>
+        </div>
+</div>
+<div class="panel-group">
+  <div class="panel panel-default">
+    <div class='panel-header'>
+      Input
+    </div>
+    <div class="panel-body">
+      <form>
+        <div class="form-group">
+          <label for="exampleFormControlFile1">Upload a Dataset</label>
+          <input id = "input_file" type="file" class="form-control-file" accept=".csv" >
+          <em>An example dataset is available for download <a href="#">here</a>.</em>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="" id="input_example_file"/>
+          <label class="form-check-label" for="input_example_file">
+            or Use the Example Dataset
+          </label>
+        </div>
+      </form>
+      
+      <p class="text-success" id="input_example_file_uploaded" hidden>The Dataset is loaded and ready for normalization.</p>
+      <p class='uploaded' style="display: none;" id='input_file_uploaded' disabled>uploaded</p>
+
+
+    </div>
+  </div>
+
+<br /><br /><br />
+  <!--<button id = "test">test</button>-->
+
+</div>
+</div>
+
+<div id="SERRF" class="tabcontent" style="display: none;">
+<div class="page-header">
+
+        <div class="row" id = "intro">
+          <div class="col-lg-6">
+            <h1>SERRF</h1>
+            <p class="lead">Normalize your data with SERRF.</p>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class= "col-lg-12">
+            <p>Using SERRF is easy. Just prepare your dataset the same format with the <a href="SERRF example dataset.xlsx">example dataset</a>, and upload it by clicking the "Choose File" button. When the dataset is successfully uploaded, simply click the "Start SERRF" button. A few minutes later, you'll have your normalized dataset ready to download. Also, feel free to try our one-for-all <a href="https://github.com/slfan2013/SERRF-online/raw/master/backup%20js/normalization.R">R code</a>. <a href="#" id="question">Still have questions?</a></p>
+          </div>
+        </div>
+</div>
+
+<input id = "input" type="file" disabled>
+<!--inline-->
+
+<p style="color:red; display:inlink;"><b>Please click this <a href="https://slfan.shinyapps.io/ShinySERRF/">link</a> to go to our temperal website for SERRF. The underlining normalization code is same.</b></p>
+
+  <p style="color:orange; display:inline;">The main server is under maintenance. Not sure when this update finish. Feel free to try our R code (see second line of the only paragraph on this page).</p>
+<div class='uploaded' style="display: none;" id='warningMessage'></div><p style="color:white;font-size:1%;margin:0;padding:0">.</p>
+
+
+
+
+
+<p class='uploaded' style="display: none;" id='uploadedText' disabled>uploaded</p>
+<br />
+<button href="#" class="btn btn-primary btn-sm btn-block" style="display:none" id="apply"><span id='applyText'>Start SERRF</span></button>
+<p id="progress" style='color:white'></p>
+
+<div class="row done" >
+
+
+  <div id='finishtext'></div><br />
+
+  <div class="col-md-6">
+    <div id="before_pca"></div>
+    <p><b>Figure1.</b> Principal Component Analysis score plot using the raw data.</p>
+    <p>The median of QC RSD across all compounds is: <span id="rsdraw"></span>.</p>
+    <p># (%) of compounds with QC RSD &lt; 20%: <span id="count_less_20_raw"></span> (<span id="perc_less_20_raw"></span>).</p>
+    <div class="with_validate">
+      <p>The median of validate RSD across all compounds is: <span id="rsdvalidateraw"></span>.</p>
+    <p># (%) of compounds with validate RSD &lt; 20%: <span id="count_less_20_validate_raw"></span> (<span id="perc_less_20_validate_raw"></span>).</p>
+    </div>
+    
+    
+    <p></p>
+  </div>
+  <div class="col-md-6">
+    <div id="after_pca"></div>
+    <p><b>Figure2.</b> Principal Component Analysis score plot using the SERRF normalized data.</p>
+    <p>The median of QC RSD across all compounds is: <span id="rsdSERRF"></span>.</p>
+    <p># (%) of compounds with QC RSD &lt; 20%: <span id="count_less_20_SERRF"></span> (<span id="perc_less_20_SERRF"></span>).</p>
+    
+    <div class="with_validate">
+      <p>The median of validate RSD across all compounds is: <span id="rsdvalidateSERRF"></span>.</p>
+    <p># (%) of compounds with validate RSD &lt; 20%: <span id="count_less_20_validate_SERRF"></span> (<span id="perc_less_20_validate_SERRF"></span>).</p>
+    </div>
+    
+    
+    <p></p>
+  </div>
+</div>
+
+<div class="row">
+  <table id='result_datatable' class="display"></table>
+</div>
+<div id="scatter_plot"></div>
+<button class="btn btn-primary btn-sm done" id="download"><span id='downloadText'>Download Results</span></button><br /><p class='done' id="asking_feedback">
+Thank you! Was SERRF helpful? <a href="javascript:void(0)" id="feedback_yes">Yes</a>, <a href="javascript:void(0)" id="feedback_no">No</a>.</p><p id="feedback_response"></p><p></p><p></p><p></p><br />
+
+</div>
+
+<div id="SERDA" class="tabcontent" style="display: none;">
+
+
+  <div class="page-header">
+  
+    <div class="row" id="intro">
+      <div class="col-lg-6">
+        <h1>SERDA</h1>
+        <p class="lead">Systematic Error Removal using Denoising Autoencoder.</p>
+      </div>
+    </div>
+  
+    <div class="row">
+      <div class="col-lg-12">
+        <p>SERDA is cool.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-body">
+    You can click button to start normalization.
+    <div>
+      
+    </div>
+    
+  </div>
+
+
+
+
+
+
+
+</div>
+
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-108366054-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-108366054-1');
+</script>
+
+
+
+<footer style="position: fixed;right: 0;bottom: 0;left: 0;padding: 1rem;margin:0;text-align: center;background-color:#1A3E68;border-color:transparent">
+  <b><a href="http://www.metabolomics.ucdavis.edu" target="_blank" style="color:white">FiehnLab</a></b>
+</footer>
+</div>
+
+<!--<div id="world-map" style="width: 600px; height: 400px"></div>-->
+<script>
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+    $("#question").click(function(){
+      window.open('mailto:slfan@ucdavis.edu?subject=SERRF Question.&body=Dear Sili, I have a question about SERRF. Please help.');
+    })
+
+
+
+    $('#input_example_file').change(function() {
+        if(this.checked) {
+            $("#input_file_uploaded").show()
+        }else{
+          $("#input_file_uploaded").hide()
+        }
+        $('#input_example_file').val(this.checked);        
+    });
+
+
+
+
+    $("#input_file").change(function() {
+
+      file = $("#input_file")[0].files[0]
+      if(".csv"!==file.name.substr(file.name.length - 4)){
+        alert("Input data has to be in the .csv file. Please see the example dataset 'Explanation'.")
+        return;
+      }
+
+      $("#input_file_uploaded").css("display", "inline-block")
+      $("#input_file_uploaded").html("<i  class=\"fa fa-spinner fa-spin\" ></i>");
+      
+      var req=ocpu.call("input_file",{
+
+        file:file
+
+      },function(session){
+        s = session
+        console.log(session)
+        $("#input_file_uploaded").html("<p class='text-success'>Good! The Dataset is loaded and ready for normalization.</p>")
+      }).done(function(){
+
+      }).fail(function(){
+
+      })
+
+
+
+
+    })
+
+
+
+
+
+});
+
+
+</script>
+<!--<script src="ml12122019.js"></script>-->
+
+
+<script src="local.min.js"></script>
+
+<script src="https://smtpjs.com/v3/smtp.js"></script>
+<!--OpenCPU-->
+<script src="opencpu-0.5-local.js"></script>
+<script src="https://sdk.amazonaws.com/js/aws-sdk-2.7.16.min.js"></script>
+
+</body>
+
+
+</html>

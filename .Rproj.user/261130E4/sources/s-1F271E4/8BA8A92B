@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1592594709926.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "145|87|193|0|\n",
+    "hash" : "0",
+    "id" : "8BA8A92B",
+    "lastKnownWriteTime" : 1592199408,
+    "last_content_update" : 1592595093791,
+    "path" : "~/GitHub/Systematic_Error_Removal_using_Denoising_Autoencoder/R2.R",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "197,10",
+        "scrollLine" : "133"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
