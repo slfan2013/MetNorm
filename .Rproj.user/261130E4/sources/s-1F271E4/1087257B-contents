@@ -68,10 +68,10 @@ input_file <- function(file = "P20 positive mode FULL.csv") {
           S = toJSON(iris)
         ),
         data_f = list(
-          S = toJSON(data$f[1,])
+          S = toJSON(1)
         ),
         data_p = list(
-          S = toJSON(data$p[1,])
+          S = toJSON(1)
         )
       ),
       ReturnConsumedCapacity = "TOTAL",
