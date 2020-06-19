@@ -95,7 +95,16 @@ input_file <- function(file = "P20 positive mode FULL.csv") {
   # svc$delete_table(
   #   TableName = "Music"
   # )
-
+  # var req=ocpu.call("input_file",{
+  #
+  # },function(session){
+  #   s = session
+  #
+  # }).done(function(){
+  #
+  # }).fail(function(){
+  #
+  # })
 
 
 
