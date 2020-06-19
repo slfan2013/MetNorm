@@ -20,20 +20,20 @@ input_file <- function(file = "P20 positive mode FULL.csv") {
   pacman::p_load(paws.database, jsonlite)
 #
 #   # Put data to cloud.
-#   svc <- dynamodb(
-#     config = list(
-#       credentials = list(
-#         creds = list(
-#           access_key_id = "AKIASFOZFH2CKOCHASTU",
-#           secret_access_key = "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"
-#           # ,session_token = "string"
-#         )
-#         # ,profile = "string"
-#       ),
-#       endpoint = "https://dynamodb.us-west-1.amazonaws.com",
-#       region = "us-west-1"
-#     )
-#   )
+  svc <- dynamodb(
+    config = list(
+      credentials = list(
+        creds = list(
+          access_key_id = "AKIASFOZFH2CKOCHASTU",
+          secret_access_key = "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"
+          # ,session_token = "string"
+        )
+        # ,profile = "string"
+      ),
+      endpoint = "https://dynamodb.us-west-1.amazonaws.com",
+      region = "us-west-1"
+    )
+  )
 
   # create table.
     # svc$create_table(

@@ -7,13 +7,13 @@
     "folds" : "",
     "hash" : "0",
     "id" : "1087257B",
-    "lastKnownWriteTime" : 1592605457,
-    "last_content_update" : 1592605457096,
+    "lastKnownWriteTime" : 1592607780,
+    "last_content_update" : 1592607780377,
     "path" : "~/GitHub/Systematic_Error_Removal_using_Denoising_Autoencoder/web/MetNorm/R/input_file.R",
     "project_path" : "R/input_file.R",
     "properties" : {
-        "cursorPosition" : "55,27",
-        "scrollLine" : "36",
+        "cursorPosition" : "35,3",
+        "scrollLine" : "11",
         "tempName" : "Untitled1"
     },
     "read_only" : false,
