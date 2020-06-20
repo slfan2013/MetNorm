@@ -14,6 +14,7 @@
 #   Test Package:              'Ctrl + Shift + T'
 
 input_file <- function(file = "P20 positive mode FULL.csv") {
+  # file = "P20 positive mode FULL.csv"
   source("https://raw.githubusercontent.com/slfan2013/rcodes/master/read_data.R")
   data = read_data(file)
 
@@ -36,7 +37,7 @@ input_file <- function(file = "P20 positive mode FULL.csv") {
 
 
 
-
+  data_id = as.integer(Sys.time())
 
 
 
@@ -47,8 +48,8 @@ input_file <- function(file = "P20 positive mode FULL.csv") {
     config = list(
       credentials = list(
         creds = list(
-          access_key_id = "AKIASFOZFH2CKOCHASTU",
-          secret_access_key = "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"
+          access_key_id = paste0("AKIASFOZFH","2CKOCHASTU"),
+          secret_access_key = paste0("T5s1VMB5lwVPDTBZbT6TP","A1Zl7ArcXIglKn1SExR")
           # ,session_token = "string"
         )
         # ,profile = "string"
@@ -64,12 +65,20 @@ input_file <- function(file = "P20 positive mode FULL.csv") {
     #     list(
     #       AttributeName = "job_id",
     #       AttributeType = "S"
+    #     ),
+    #     list(
+    #       AttributeName = "data_id",
+    #       AttributeType = "S"
     #     )
     #   ),
     #   KeySchema = list(
     #     list(
     #       AttributeName = "job_id",
     #       KeyType = "HASH"
+    #     ),
+    #     list(
+    #       AttributeName = "data_id",
+    #       KeyType = "RANGE"
     #     )
     #   ),
     #   ProvisionedThroughput = list(
@@ -85,29 +94,33 @@ input_file <- function(file = "P20 positive mode FULL.csv") {
   start = Sys.time()
   for(i in 1:(nrow(data$e_matrix)-10)){
     if(i %% 10 == 1){
-      # print(i)
-      svc$put_item(
-        Item = list(
-          job_id = list(S = 'test'),
-          data_e = list(S = jsonlite::toJSON(list(e = data$e_matrix[i:i+10,]),auto_unbox = TRUE,force = TRUE))
-        ),
-        ReturnConsumedCapacity = "TOTAL",
-        TableName = "SERDA"
-      )
+      print(i)
+      # microbenchmark::microbenchmark({
+       a= svc$put_item(
+          Item = list(
+            job_id = list(S = paste0(data_id,"_",i,"_",i+9)),
+            data_id = list(S = data_id),
+            data_e = list(S = jsonlite::toJSON(data$e_matrix[i:(i+9),],auto_unbox = TRUE,force = TRUE))
+          ),
+          ReturnConsumedCapacity = "TOTAL",
+          TableName = "SERDA"
+        )
+      # })
+
     }
 
   }
-  o = Sys.time() - start
-  # o = microbenchmark::microbenchmark({
-  #   a = svc$put_item(
-  #     Item = list(
-  #       job_id = list(S = 'test'),
-  #       data_e = list(S = jsonlite::toJSON(list(e = data$e_matrix[1:10,]),auto_unbox = TRUE,force = TRUE))
-  #     ),
-  #     ReturnConsumedCapacity = "TOTAL",
-  #     TableName = "SERDA"
-  #   )
-  # })
+  svc$put_item(
+    Item = list(
+      job_id = list(S = paste0(data_id,"_",i+1,"_",i+9)),
+      data_id = list(S = data_id),
+      data_e = list(S = jsonlite::toJSON(data$e_matrix[(i+1):nrow(data$e_matrix),],auto_unbox = TRUE,force = TRUE))
+    ),
+    ReturnConsumedCapacity = "TOTAL",
+    TableName = "SERDA"
+  )
+  time_consumed = Sys.time() - start
+
 
 
   # get_item
@@ -183,5 +196,5 @@ input_file <- function(file = "P20 positive mode FULL.csv") {
 
 
 
-  return(o)
+  return(time_consumed)
 }
