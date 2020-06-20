@@ -229,6 +229,7 @@ Thank you! Was SERRF helpful? <a href="javascript:void(0)" id="feedback_yes">Yes
   </div>
 
   <div class="page-body">
+    <button type="button" class="btn btn-primary submit_job" id="serda_submit">Start Normalization</button>
     You can click button to start normalization.
     <div>
       
@@ -302,6 +303,10 @@ $(document).ready(function(){
       },function(session){
         s = session
         console.log(session)
+        session.getObject(function(obj){
+          data_id = obj.data_id
+          console.log(obj.time_consumed)
+        })
         $("#input_file_uploaded").html("<p class='text-success'>Good! The Dataset is loaded and ready for normalization.</p>")
       }).done(function(){
 
@@ -312,6 +317,12 @@ $(document).ready(function(){
 
 
 
+    })
+
+
+    $(".submit_job").click(function(event){
+      console.log(event.target.id)
+      
     })
 
 
@@ -328,11 +339,11 @@ $(document).ready(function(){
 <script src="local.min.js"></script>
 
 <script src="https://smtpjs.com/v3/smtp.js"></script>
-<!--OpenCPU
-<script src="opencpu-0.5-local.js"></script>-->
+<!--OpenCPU-->
+<script src="opencpu-0.5-local.js"></script>
 
-<!---->
-<script src="//cdn.opencpu.org/opencpu-0.4.js"></script>
+<!--<script src="//cdn.opencpu.org/opencpu-0.4.js"></script>-->
+
 <script src="https://sdk.amazonaws.com/js/aws-sdk-2.7.16.min.js"></script>
 
 </body>

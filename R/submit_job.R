@@ -13,7 +13,7 @@
 #   Check Package:             'Ctrl + Shift + E'
 #   Test Package:              'Ctrl + Shift + T'
 
-input_file <- function(file = "P20 positive mode FULL.csv") {
+submit_job <- function(data_id = "P20 positive mode FULL.csv") {
   # file = "P20 positive mode CUT.csv"
   source("https://raw.githubusercontent.com/slfan2013/rcodes/master/read_data.R")
   data = read_data(file)
@@ -43,7 +43,7 @@ input_file <- function(file = "P20 positive mode FULL.csv") {
 
 
 
-#   # Put data to cloud.
+  #   # Put data to cloud.
   svc <- dynamodb(
     config = list(
       credentials = list(
@@ -60,33 +60,33 @@ input_file <- function(file = "P20 positive mode FULL.csv") {
   )
 
   # create table.
-    # svc$create_table(
-    #   AttributeDefinitions = list(
-    #     list(
-    #       AttributeName = "job_id",
-    #       AttributeType = "S"
-    #     ),
-    #     list(
-    #       AttributeName = "data_id",
-    #       AttributeType = "S"
-    #     )
-    #   ),
-    #   KeySchema = list(
-    #     list(
-    #       AttributeName = "job_id",
-    #       KeyType = "HASH"
-    #     ),
-    #     list(
-    #       AttributeName = "data_id",
-    #       KeyType = "RANGE"
-    #     )
-    #   ),
-    #   ProvisionedThroughput = list(
-    #     ReadCapacityUnits = 500L,
-    #     WriteCapacityUnits = 500L
-    #   ),
-    #   TableName = "SERDA"
-    # )
+  # svc$create_table(
+  #   AttributeDefinitions = list(
+  #     list(
+  #       AttributeName = "job_id",
+  #       AttributeType = "S"
+  #     ),
+  #     list(
+  #       AttributeName = "data_id",
+  #       AttributeType = "S"
+  #     )
+  #   ),
+  #   KeySchema = list(
+  #     list(
+  #       AttributeName = "job_id",
+  #       KeyType = "HASH"
+  #     ),
+  #     list(
+  #       AttributeName = "data_id",
+  #       KeyType = "RANGE"
+  #     )
+  #   ),
+  #   ProvisionedThroughput = list(
+  #     ReadCapacityUnits = 500L,
+  #     WriteCapacityUnits = 500L
+  #   ),
+  #   TableName = "SERDA"
+  # )
 
 
   # put_item
@@ -96,15 +96,15 @@ input_file <- function(file = "P20 positive mode FULL.csv") {
     if(i %% 10 == 1){
       # print(i)
       # microbenchmark::microbenchmark({
-       a= svc$put_item(
-          Item = list(
-            job_id = list(S = paste0(data_id,"_",i,"_",i+9)),
-            data_id = list(S = data_id),
-            data_e = list(S = jsonlite::toJSON(data$e_matrix[i:(i+9),],auto_unbox = TRUE,force = TRUE))
-          ),
-          ReturnConsumedCapacity = "TOTAL",
-          TableName = "SERDA"
-        )
+      a= svc$put_item(
+        Item = list(
+          job_id = list(S = paste0(data_id,"_",i,"_",i+9)),
+          data_id = list(S = data_id),
+          data_e = list(S = jsonlite::toJSON(data$e_matrix[i:(i+9),],auto_unbox = TRUE,force = TRUE))
+        ),
+        ReturnConsumedCapacity = "TOTAL",
+        TableName = "SERDA"
+      )
       # })
 
     }
