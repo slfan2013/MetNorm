@@ -231,8 +231,10 @@ Thank you! Was SERRF helpful? <a href="javascript:void(0)" id="feedback_yes">Yes
   <div class="page-body">
     <button type="button" class="btn btn-primary submit_job" id="serda_submit">Start Normalization</button>
     You can click button to start normalization.
-    <div>
-      
+    <div class="row">
+      <div class='col-sm-6'>
+        <div id="serda_pca_raw"></div>
+      </div>     
     </div>
     
   </div>
@@ -266,6 +268,24 @@ Thank you! Was SERRF helpful? <a href="javascript:void(0)" id="feedback_yes">Yes
 <!--<div id="world-map" style="width: 600px; height: 400px"></div>-->
 <script>
 $(document).ready(function(){
+      dynamodb=1;
+      ocpu.call("get_key",{},function(session){
+        session.getObject(function(obj){
+          dynamodb = new AWS.DynamoDB({
+              accessKeyId:obj.access_key_id[0],
+              secretAccessKey:obj.secret_access_key[0],
+              endpoint:"https://dynamodb.us-west-1.amazonaws.com",
+              region : "us-west-1"
+            });
+
+
+        })
+      })
+
+
+
+    data_id = "data_id";
+    normalization_method = 'serda'
     $('[data-toggle="tooltip"]').tooltip();
     $("#question").click(function(){
       window.open('mailto:slfan@ucdavis.edu?subject=SERRF Question.&body=Dear Sili, I have a question about SERRF. Please help.');
@@ -297,14 +317,12 @@ $(document).ready(function(){
       $("#input_file_uploaded").html("<i  class=\"fa fa-spinner fa-spin\" ></i>");
       
       var req=ocpu.call("input_file",{
-
         file:file
-
       },function(session){
         s = session
         console.log(session)
         session.getObject(function(obj){
-          data_id = obj.data_id
+          data_id = obj.data_id[0]
           console.log(obj.time_consumed)
         })
         $("#input_file_uploaded").html("<p class='text-success'>Good! The Dataset is loaded and ready for normalization.</p>")
@@ -321,8 +339,82 @@ $(document).ready(function(){
 
 
     $(".submit_job").click(function(event){
+      var normalization_method = event.target.id.replace("_submit", '')
       console.log(event.target.id)
-      
+      var req=ocpu.call("submit_job",{
+        data_id:data_id,
+        normalization_method:normalization_method
+      },function(session){
+        s2 = session
+        console.log(session)
+        session.getObject(function(obj){
+          console.log(obj.status[0])
+
+          if(obj.status[0] === 'success'){
+            // now start looking for result.
+            var param = {
+              Key:{
+                job_id:{
+                  S: data_id+"_"+normalization_method+"_result",
+                },
+                data_id:{
+                  S: String(data_id)
+                }
+              },
+              TableName:"SERDA"
+            }
+            dynamodb.getItem(param,function(err, data){
+              e = err
+              d = data
+
+
+              var pca_raw = JSON.parse(d.Item['pca_'+normalization_method].S)
+              window["pca_"+normalization_method] = JSON.parse(d.Item["pca_"+normalization_method].S)
+              window["QC_cv_RSDs_"+normalization_method] = JSON.parse(d.Item.QC_cv_RSDs.S)[0]
+              window["validates_RSDs_"+normalization_method] = JSON.parse(d.Item.validates_RSDs.S)
+
+              // !!! print PCA.
+              var trace1 = {
+                x: [1, 2, 3, 4],
+                y: [10, 15, 13, 17],
+                mode: 'markers',
+                type: 'scatter'
+              };
+
+              var trace2 = {
+                x: [2, 3, 4, 5],
+                y: [16, 5, 11, 9],
+                mode: 'lines',
+                type: 'scatter'
+              };
+
+              var trace3 = {
+                x: [1, 2, 3, 4],
+                y: [12, 9, 15, 12],
+                mode: 'lines+markers',
+                type: 'scatter'
+              };
+
+              var data = [trace1, trace2, trace3];
+
+              Plotly.newPlot('serda_pca_raw', data);
+
+            })
+
+
+          }else{
+            alert("Error")
+          }
+
+        })
+        
+      }).done(function(){
+
+      }).fail(function(){
+
+      })
+
+
     })
 
 

@@ -13,51 +13,12 @@
 #   Check Package:             'Ctrl + Shift + E'
 #   Test Package:              'Ctrl + Shift + T'
 
-submit_job <- function(data_id = "P20 positive mode FULL.csv") {
-  # file = "P20 positive mode CUT.csv"
-  source("https://raw.githubusercontent.com/slfan2013/rcodes/master/read_data.R")
-  data = read_data(file)
-
+submit_job <- function(data_id = "1592676776", normalization_method = "serda") {
+  # normalization_method = "serda"
   pacman::p_load(paws.database, jsonlite)
+  data_id = as.character(data_id)
 
-  # restdb
-  # Server API-key (full access): 2071940744066a0e786115d88f3bbae1fe4d9
-  # create job (data) under a collection
-  # url = 'https://testtest-ca74.restdb.io/rest/testcollection'
-  # headers = c("content-type"="application/json",
-  #             "x-apikey"="2071940744066a0e786115d88f3bbae1fe4d9",
-  #             "cache-control"="no-cache")
-  # init_data = list(e = data$e_matrix[1,]); #1114.262 milliseconds
-  # postfields = jsonlite::toJSON(init_data,auto_unbox = TRUE,force = TRUE)
-  # microbenchmark::microbenchmark({
-  #   result = RCurl::getURL(url, customrequest='POST', httpheader=headers,postfields=postfields)
-  # })
-  #
-  # result
-
-
-
-  data_id = as.integer(Sys.time())
-
-
-
-
-
-  #   # Put data to cloud.
-  svc <- dynamodb(
-    config = list(
-      credentials = list(
-        creds = list(
-          access_key_id = paste0("AKIASFOZFH","2CKOCHASTU"),
-          secret_access_key = paste0("T5s1VMB5lwVPDTBZbT6TP","A1Zl7ArcXIglKn1SExR")
-          # ,session_token = "string"
-        )
-        # ,profile = "string"
-      ),
-      endpoint = "https://dynamodb.us-west-1.amazonaws.com",
-      region = "us-west-1"
-    )
-  )
+  job_id = as.integer(Sys.time())
 
   # create table.
   # svc$create_table(
@@ -65,79 +26,45 @@ submit_job <- function(data_id = "P20 positive mode FULL.csv") {
   #     list(
   #       AttributeName = "job_id",
   #       AttributeType = "S"
-  #     ),
-  #     list(
-  #       AttributeName = "data_id",
-  #       AttributeType = "S"
   #     )
   #   ),
   #   KeySchema = list(
   #     list(
   #       AttributeName = "job_id",
   #       KeyType = "HASH"
-  #     ),
-  #     list(
-  #       AttributeName = "data_id",
-  #       KeyType = "RANGE"
   #     )
   #   ),
   #   ProvisionedThroughput = list(
   #     ReadCapacityUnits = 500L,
   #     WriteCapacityUnits = 500L
   #   ),
-  #   TableName = "SERDA"
+  #   TableName = "SERDA_jobs"
   # )
 
 
-  # put_item
-  # 124.1012 milliseconds
-  start = Sys.time()
-  for(i in 1:(nrow(data$e_matrix)-10)){
-    if(i %% 10 == 1){
-      # print(i)
-      # microbenchmark::microbenchmark({
-      a= svc$put_item(
-        Item = list(
-          job_id = list(S = paste0(data_id,"_",i,"_",i+9)),
-          data_id = list(S = data_id),
-          data_e = list(S = jsonlite::toJSON(data$e_matrix[i:(i+9),],auto_unbox = TRUE,force = TRUE))
-        ),
-        ReturnConsumedCapacity = "TOTAL",
-        TableName = "SERDA"
-      )
-      # })
 
-    }
-
-  }
-  svc$put_item(
-    Item = list(
-      job_id = list(S = paste0(data_id,"_",i+1,"_",i+9)),
-      data_id = list(S = data_id),
-      data = list(S = jsonlite::toJSON(data$e_matrix[(i+1):nrow(data$e_matrix),],auto_unbox = TRUE,force = TRUE))
-    ),
-    ReturnConsumedCapacity = "TOTAL",
-    TableName = "SERDA"
+  #   # Put data to cloud.
+  svc <- dynamodb(
+    config = list(
+      credentials = list(
+        creds = get_key()
+        # ,profile = "string"
+      ),
+      endpoint = "https://dynamodb.us-west-1.amazonaws.com",
+      region = "us-west-1"
+    )
   )
-  time_consumed = as.numeric(Sys.time() - start)
+
 
   svc$put_item(
     Item = list(
-      job_id = list(S = paste0(data_id,"_f")),
-      data_id = list(S = data_id),
-      data = list(S = jsonlite::toJSON(data$f,auto_unbox = TRUE,force = TRUE))
+      job_id = list(S = job_id),
+      normalization_method = list(S = normalization_method),
+      status = list(S = "waiting_to_be_normalized"),
+      data_id = list(S = data_id)
     ),
     ReturnConsumedCapacity = "TOTAL",
-    TableName = "SERDA"
-  )
-  svc$put_item(
-    Item = list(
-      job_id = list(S = paste0(data_id,"_p")),
-      data_id = list(S = data_id),
-      data = list(S = jsonlite::toJSON(data$p,auto_unbox = TRUE,force = TRUE))
-    ),
-    ReturnConsumedCapacity = "TOTAL",
-    TableName = "SERDA"
+    TableName = "SERDA_jobs"
   )
 
 
@@ -145,80 +72,5 @@ submit_job <- function(data_id = "P20 positive mode FULL.csv") {
 
 
 
-  # get_item
-  # item = svc$get_item(
-  #   Key = list(
-  #     job_id = list(
-  #       S = "test1"
-  #     )
-  #   ),
-  #   TableName = "SERDA"
-  # )
-
-
-  # delete table.
-  # svc$delete_table(
-  #   TableName = "Music"
-  # )
-  # var req=ocpu.call("input_file",{
-  #
-  # },function(session){
-  #   s = session
-  #
-  # }).done(function(){
-  #
-  # }).fail(function(){
-  #
-  # })
-
-
-
-  # https://console.aws.amazon.com/iam/home#/users/slfan?section=security_credentials
-  # T5s1VMB5lwVPDTBZbT6TPA1
-  # Zl7ArcXIglKn1SExR
-  # AKIASFOZFH2CKOC
-  # HASTU
-  # us-west-1
-  #  https://dynamodb.us-west-1.amazonaws.com
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  # jsonbin
-  # url = "https://api.jsonbin.io/b"
-  # headers=c('Content-Type'='application/json','secret-key'='$2b$10$5bk8vcqs/lgNmnBLLGmSauJJfQkfmgBkqnerEd0EaD6xiCf0BLh8u',"collection-id" = "5ee94ed3ccc9877ac37d1724")
-  # # data = list("Sample" = "Hello World")
-  # # data = d
-  # postfields = toJSON(data$e_matrix[1,],auto_unbox = TRUE,force = TRUE)
-  # # format(object.size(data), units = "MB")
-  # # start = Sys.time()
-  # microbenchmark::microbenchmark({
-  #   a = RCurl::getURL(url, customrequest='POST', httpheader=headers,postfields=postfields)
-  # })
-  # result = RCurl::getURL(url, customrequest='POST', httpheader=headers,postfields=postfields)
-
-
-
-
-
-
-
-
-
-
-
-
-  return(list(time_consumed=time_consumed,data_id = data_id))
+  return(list(status = "success"))
 }

@@ -14,7 +14,7 @@
 #   Test Package:              'Ctrl + Shift + T'
 
 input_file <- function(file = "P20 positive mode FULL.csv") {
-  # file = "P20 positive mode CUT.csv"
+  # file = "P20 positive mode FULL.csv"
   source("https://raw.githubusercontent.com/slfan2013/rcodes/master/read_data.R")
   data = read_data(file)
 
@@ -35,8 +35,6 @@ input_file <- function(file = "P20 positive mode FULL.csv") {
   #
   # result
 
-
-
   data_id = as.integer(Sys.time())
 
 
@@ -47,11 +45,7 @@ input_file <- function(file = "P20 positive mode FULL.csv") {
   svc <- dynamodb(
     config = list(
       credentials = list(
-        creds = list(
-          access_key_id = paste0("AKIASFOZFH","2CKOCHASTU"),
-          secret_access_key = paste0("T5s1VMB5lwVPDTBZbT6TP","A1Zl7ArcXIglKn1SExR")
-          # ,session_token = "string"
-        )
+        creds = get_key()
         # ,profile = "string"
       ),
       endpoint = "https://dynamodb.us-west-1.amazonaws.com",
@@ -92,29 +86,37 @@ input_file <- function(file = "P20 positive mode FULL.csv") {
   # put_item
   # 124.1012 milliseconds
   start = Sys.time()
-  for(i in 1:(nrow(data$e_matrix)-10)){
+  for(i in 1:nrow(data$e_matrix)){
     if(i %% 10 == 1){
-      # print(i)
-      # microbenchmark::microbenchmark({
-       a= svc$put_item(
+      print(i)
+      tryCatch({
+        a=svc$put_item(
           Item = list(
             job_id = list(S = paste0(data_id,"_",i,"_",i+9)),
             data_id = list(S = data_id),
-            data_e = list(S = jsonlite::toJSON(data$e_matrix[i:(i+9),],auto_unbox = TRUE,force = TRUE))
+            data = list(S = jsonlite::toJSON(data$e_matrix[i:(i+9),],auto_unbox = TRUE,force = TRUE))
           ),
           ReturnConsumedCapacity = "TOTAL",
           TableName = "SERDA"
         )
+      }, error = function(e){
+
+      })
+      # microbenchmark::microbenchmark({
+
       # })
 
     }
-
   }
+
+ i = tail(which(1:nrow(data$e_matrix) %% 10==1), n = 1)
+
+
   svc$put_item(
     Item = list(
-      job_id = list(S = paste0(data_id,"_",i+1,"_",i+9)),
+      job_id = list(S = paste0(data_id,"_",i,"_",i+9)),
       data_id = list(S = data_id),
-      data = list(S = jsonlite::toJSON(data$e_matrix[(i+1):nrow(data$e_matrix),],auto_unbox = TRUE,force = TRUE))
+      data = list(S = jsonlite::toJSON(data$e_matrix[i:nrow(data$e_matrix),],auto_unbox = TRUE,force = TRUE))
     ),
     ReturnConsumedCapacity = "TOTAL",
     TableName = "SERDA"
@@ -170,29 +172,6 @@ input_file <- function(file = "P20 positive mode FULL.csv") {
   # }).fail(function(){
   #
   # })
-
-
-
-  # https://console.aws.amazon.com/iam/home#/users/slfan?section=security_credentials
-  # T5s1VMB5lwVPDTBZbT6TPA1
-  # Zl7ArcXIglKn1SExR
-  # AKIASFOZFH2CKOC
-  # HASTU
-  # us-west-1
-  #  https://dynamodb.us-west-1.amazonaws.com
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -12,4 +12,5 @@ LazyData: true
 Imports:
     pacman,
     paws.database,
-	jsonlite
+	jsonlite,
+	stringi
