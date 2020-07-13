@@ -1,5 +1,5 @@
-
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -18,13 +18,15 @@
   <link rel="stylesheet" href="local.css">
   <link href="jquery-jvectormap-2.0.3.css" rel="stylesheet">
   <!-- DataTable -->
-  <link href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>
+  <link href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
 
 
 
   <style type="text/css" media="all">
     /*Change the size here*/
-    .tooltip-inner {width: 180px;}
+    .tooltip-inner {
+      width: 180px;
+    }
   </style>
 
   <script src="jquery-3.2.1.min.js"></script>
@@ -33,7 +35,8 @@
   <script src="jquery-jvectormap-2.0.3.min.js"></script>
   <script src="jquery-jvectormap-world-mill.min.js"></script>
   <script src="pouchdb-6.3.4.min.js"></script>
-  <!--<script src="opencpu-0.5.js"></script>-->  <!-- plotly-->
+  <!--<script src="opencpu-0.5.js"></script>-->
+  <!-- plotly-->
   <script src="underscore.min.js"></script>
   <script src="plotly.min.js"></script>
   <script src="myJS.min.js"></script>
@@ -53,89 +56,122 @@
 
 <body style="background-color:#F9F4E5;">
 
-   <div class="navbar navbar-default navbar-fixed-top" style="background-color: #1A3E68;border-bottom:5px solid #DFC166; height:20px">
-      <div class="container">
+  <div class="navbar navbar-default navbar-fixed-top"
+    style="background-color: #1A3E68;border-bottom:5px solid #DFC166; height:20px">
+    <div class="container">
 
-        <div class="navbar-collapse collapse" id="navbar-main">
-          <ul class="nav navbar-nav">
-            <li>
-              <a class="navigate" href="#" id='navintro'>Intro</a>
-            </li>
-            <!--<li>
+      <div class="navbar-collapse collapse" id="navbar-main">
+        <ul class="nav navbar-nav">
+          <li>
+            <a class="navigate" href="#" id='navintro'>Intro</a>
+          </li>
+          <!--<li>
               <a class="navigate" href="#" id='navtutorial'>Tutorial</a>
             </li>-->
-            <li>
-              <a class="navigate" href="#" id='navSERRF'><span class="rainbow">Use SERRF!</span></a>
-            </li>
-            <li>
-              <a class="navigate" href="#" id='navSERDA'>SERDA</a>
-            </li>
-          </ul>
+          <li>
+            <a class="navigate" href="#" id='navSERRF'><span class="rainbow">Use SERRF!</span></a>
+          </li>
+          <li>
+            <a class="navigate" href="#" id='navSERDA'>SERDA</a>
+          </li>
+        </ul>
 
-          <!--<ul class="nav navbar-nav navbar-right">
+        <!--<ul class="nav navbar-nav navbar-right">
             <li><a class="navigate" href="#" id='navstat'><i class="	fa fa-pie-chart"></i></a></li>
           </ul>-->
 
-          <!--<ul class="nav navbar-nav navbar-right">
+        <!--<ul class="nav navbar-nav navbar-right">
             <li><a href="https://github.com/slfan2013/SERRFweb/issues" id='navbugs' target="_blank"  data-placement="bottom" data-toggle="tooltip" title="report error or issue"><i class="fa fa fa-bug"></i></a></li>
           </ul>-->
 
-        </div>
       </div>
     </div>
+  </div>
 
 
 
 
 
-<div class="container" style="background-color:white; padding-bottom:15px;">
-<div id = 'intro' class="tabcontent">
-<div class="page-header">
+  <div class="container" style="background-color:white; padding-bottom:15px;">
+    <div id='intro' class="tabcontent">
+      <div class="page-header">
 
         <div class="row">
           <div class="col-lg-12">
             <h1>Metabolomics Data Normalization</h1>
-            <p class="lead">Here is a collection of popular normalization methods for metabolomics dataset.</p>
+            <p class="lead">Here is a collection of popular normalization methods for metabolomics dataset. 11:43AM 7.13</p>
           </div>
         </div>
-</div>
-<div class="panel-group">
-  <div class="panel panel-default">
-    <div class='panel-header'>
-      Input
-    </div>
-    <div class="panel-body">
-      <form>
-        <div class="form-group">
-          <label for="exampleFormControlFile1">Upload a Dataset</label>
-          <input id = "input_file" type="file" class="form-control-file" accept=".csv" >
-          <em>An example dataset is available for download <a href="#">here</a>.</em>
+      </div>
+      <div class="panel-group">
+        <div class="panel panel-default">
+          <div class='panel-header'>
+            Input
+          </div>
+          <div class="panel-body">
+              <div class="row">
+                <div class="col-sm-6">
+                  <div class="form-group">
+                    <label for="exampleFormControlFile1">Upload a Dataset</label>
+                    <input id="input_file" type="file" class="form-control-file" accept=".csv">
+                    <em>An example dataset is available for download <a href="#">here</a>.</em>
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="input_example_file" />
+                    <label class="form-check-label" for="input_example_file">
+                      or Use the Example Dataset
+                    </label>
+                  </div>
+                </div>
+              </div>
+              
+              
+
+            <p class="text-success" id="input_example_file_uploaded" hidden>The Dataset is loaded and ready for
+              normalization.</p>
+            <p class='uploaded' style="display: none;" id='input_file_uploaded' disabled>uploaded</p>
+          </div>
         </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="" id="input_example_file"/>
-          <label class="form-check-label" for="input_example_file">
-            or Use the Example Dataset
-          </label>
+
+
+        
+        <div class="panel panel-default">
+          <div class='panel-header'>
+            Methods
+          </div>
+          <div class="panel-body">
+            <form>
+              <input type="checkbox" id="serda" name="serda" value="Bike">
+              <label for="serda"> SERDA</label><br>
+              <input type="checkbox" id="serrf" name="serrf" value="Car">
+              <label for="serrf"> SERRF</label><br>
+              <input type="checkbox" id="mtic" name="mtic" value="Boat">
+              <label for="mtic"> mTIC</label><br><br>
+              <button type="button" class="btn btn-primary submit_job" id="submit_job">Start Normalization</button>
+            </form>
+
+            <p class="text-success" id="input_example_file_uploaded" hidden>The Dataset is loaded and ready for
+              normalization.</p>
+            <p class='uploaded' style="display: none;" id='input_file_uploaded' disabled>uploaded</p>
+          </div>
         </div>
-      </form>
-      
-      <p class="text-success" id="input_example_file_uploaded" hidden>The Dataset is loaded and ready for normalization.</p>
-      <p class='uploaded' style="display: none;" id='input_file_uploaded' disabled>uploaded</p>
 
 
+
+
+
+        <br /><br /><br />
+        <!--<button id = "test">test</button>-->
+
+      </div>
     </div>
-  </div>
+<!-- 
+    <div id="SERRF" class="tabcontent" style="display: none;">
+      <div class="page-header">
 
-<br /><br /><br />
-  <!--<button id = "test">test</button>-->
-
-</div>
-</div>
-
-<div id="SERRF" class="tabcontent" style="display: none;">
-<div class="page-header">
-
-        <div class="row" id = "intro">
+        <div class="row" id="intro">
           <div class="col-lg-6">
             <h1>SERRF</h1>
             <p class="lead">Normalize your data with SERRF.</p>
@@ -143,300 +179,443 @@
         </div>
 
         <div class="row">
-          <div class= "col-lg-12">
-            <p>Using SERRF is easy. Just prepare your dataset the same format with the <a href="SERRF example dataset.xlsx">example dataset</a>, and upload it by clicking the "Choose File" button. When the dataset is successfully uploaded, simply click the "Start SERRF" button. A few minutes later, you'll have your normalized dataset ready to download. Also, feel free to try our one-for-all <a href="https://github.com/slfan2013/SERRF-online/raw/master/backup%20js/normalization.R">R code</a>. <a href="#" id="question">Still have questions?</a></p>
+          <div class="col-lg-12">
+            <p>Using SERRF is easy. Just prepare your dataset the same format with the <a
+                href="SERRF example dataset.xlsx">example dataset</a>, and upload it by clicking the "Choose File"
+              button. When the dataset is successfully uploaded, simply click the "Start SERRF" button. A few minutes
+              later, you'll have your normalized dataset ready to download. Also, feel free to try our one-for-all <a
+                href="https://github.com/slfan2013/SERRF-online/raw/master/backup%20js/normalization.R">R code</a>. <a
+                href="#" id="question">Still have questions?</a></p>
           </div>
         </div>
-</div>
-
-<input id = "input" type="file" disabled>
-<!--inline-->
-
-<p style="color:red; display:inlink;"><b>Please click this <a href="https://slfan.shinyapps.io/ShinySERRF/">link</a> to go to our temperal website for SERRF. The underlining normalization code is same.</b></p>
-
-  <p style="color:orange; display:inline;">The main server is under maintenance. Not sure when this update finish. Feel free to try our R code (see second line of the only paragraph on this page).</p>
-<div class='uploaded' style="display: none;" id='warningMessage'></div><p style="color:white;font-size:1%;margin:0;padding:0">.</p>
-
-
-
-
-
-<p class='uploaded' style="display: none;" id='uploadedText' disabled>uploaded</p>
-<br />
-<button href="#" class="btn btn-primary btn-sm btn-block" style="display:none" id="apply"><span id='applyText'>Start SERRF</span></button>
-<p id="progress" style='color:white'></p>
-
-<div class="row done" >
-
-
-  <div id='finishtext'></div><br />
-
-  <div class="col-md-6">
-    <div id="before_pca"></div>
-    <p><b>Figure1.</b> Principal Component Analysis score plot using the raw data.</p>
-    <p>The median of QC RSD across all compounds is: <span id="rsdraw"></span>.</p>
-    <p># (%) of compounds with QC RSD &lt; 20%: <span id="count_less_20_raw"></span> (<span id="perc_less_20_raw"></span>).</p>
-    <div class="with_validate">
-      <p>The median of validate RSD across all compounds is: <span id="rsdvalidateraw"></span>.</p>
-    <p># (%) of compounds with validate RSD &lt; 20%: <span id="count_less_20_validate_raw"></span> (<span id="perc_less_20_validate_raw"></span>).</p>
-    </div>
-    
-    
-    <p></p>
-  </div>
-  <div class="col-md-6">
-    <div id="after_pca"></div>
-    <p><b>Figure2.</b> Principal Component Analysis score plot using the SERRF normalized data.</p>
-    <p>The median of QC RSD across all compounds is: <span id="rsdSERRF"></span>.</p>
-    <p># (%) of compounds with QC RSD &lt; 20%: <span id="count_less_20_SERRF"></span> (<span id="perc_less_20_SERRF"></span>).</p>
-    
-    <div class="with_validate">
-      <p>The median of validate RSD across all compounds is: <span id="rsdvalidateSERRF"></span>.</p>
-    <p># (%) of compounds with validate RSD &lt; 20%: <span id="count_less_20_validate_SERRF"></span> (<span id="perc_less_20_validate_SERRF"></span>).</p>
-    </div>
-    
-    
-    <p></p>
-  </div>
-</div>
-
-<div class="row">
-  <table id='result_datatable' class="display"></table>
-</div>
-<div id="scatter_plot"></div>
-<button class="btn btn-primary btn-sm done" id="download"><span id='downloadText'>Download Results</span></button><br /><p class='done' id="asking_feedback">
-Thank you! Was SERRF helpful? <a href="javascript:void(0)" id="feedback_yes">Yes</a>, <a href="javascript:void(0)" id="feedback_no">No</a>.</p><p id="feedback_response"></p><p></p><p></p><p></p><br />
-
-</div>
-
-<div id="SERDA" class="tabcontent" style="display: none;">
-
-
-  <div class="page-header">
-  
-    <div class="row" id="intro">
-      <div class="col-lg-6">
-        <h1>SERDA</h1>
-        <p class="lead">Systematic Error Removal using Denoising Autoencoder.</p>
       </div>
-    </div>
-  
-    <div class="row">
-      <div class="col-lg-12">
-        <p>SERDA is cool.</p>
+
+      <input id="input" type="file" disabled>
+      
+
+      <p style="color:red; display:inlink;"><b>Please click this <a
+            href="https://slfan.shinyapps.io/ShinySERRF/">link</a> to go to our temperal website for SERRF. The
+          underlining normalization code is same.</b></p>
+
+      <p style="color:orange; display:inline;">The main server is under maintenance. Not sure when this update finish.
+        Feel free to try our R code (see second line of the only paragraph on this page).</p>
+      <div class='uploaded' style="display: none;" id='warningMessage'></div>
+      <p style="color:white;font-size:1%;margin:0;padding:0">.</p>
+
+
+
+
+
+      <p class='uploaded' style="display: none;" id='uploadedText' disabled>uploaded</p>
+      <br />
+      <button href="#" class="btn btn-primary btn-sm btn-block" style="display:none" id="apply"><span
+          id='applyText'>Start SERRF</span></button>
+      <p id="progress" style='color:white'></p>
+
+      <div class="row done">
+
+
+        <div id='finishtext'></div><br />
+
+        <div class="col-md-6">
+          <div id="before_pca"></div>
+          <p><b>Figure1.</b> Principal Component Analysis score plot using the raw data.</p>
+          <p>The median of QC RSD across all compounds is: <span id="rsdraw"></span>.</p>
+          <p># (%) of compounds with QC RSD &lt; 20%: <span id="count_less_20_raw"></span> (<span
+              id="perc_less_20_raw"></span>).</p>
+          <div class="with_validate">
+            <p>The median of validate RSD across all compounds is: <span id="rsdvalidateraw"></span>.</p>
+            <p># (%) of compounds with validate RSD &lt; 20%: <span id="count_less_20_validate_raw"></span> (<span
+                id="perc_less_20_validate_raw"></span>).</p>
+          </div>
+
+
+          <p></p>
+        </div>
+        <div class="col-md-6">
+          <div id="after_pca"></div>
+          <p><b>Figure2.</b> Principal Component Analysis score plot using the SERRF normalized data.</p>
+          <p>The median of QC RSD across all compounds is: <span id="rsdSERRF"></span>.</p>
+          <p># (%) of compounds with QC RSD &lt; 20%: <span id="count_less_20_SERRF"></span> (<span
+              id="perc_less_20_SERRF"></span>).</p>
+
+          <div class="with_validate">
+            <p>The median of validate RSD across all compounds is: <span id="rsdvalidateSERRF"></span>.</p>
+            <p># (%) of compounds with validate RSD &lt; 20%: <span id="count_less_20_validate_SERRF"></span> (<span
+                id="perc_less_20_validate_SERRF"></span>).</p>
+          </div>
+
+
+          <p></p>
+        </div>
       </div>
+
+      <div class="row">
+        <table id='result_datatable' class="display"></table>
+      </div>
+      <div id="scatter_plot"></div>
+      <button class="btn btn-primary btn-sm done" id="download"><span id='downloadText'>Download
+          Results</span></button><br />
+      <p class='done' id="asking_feedback">
+        Thank you! Was SERRF helpful? <a href="javascript:void(0)" id="feedback_yes">Yes</a>, <a
+          href="javascript:void(0)" id="feedback_no">No</a>.</p>
+      <p id="feedback_response"></p>
+      <p></p>
+      <p></p>
+      <p></p><br />
+
     </div>
+
+    <div id="SERDA" class="tabcontent" style="display: none;">
+
+
+      <div class="page-header">
+
+        <div class="row" id="intro">
+          <div class="col-lg-6">
+            <h1>SERDA</h1>
+            <p class="lead">Systematic Error Removal using Denoising Autoencoder.</p>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-12">
+            <p>SERDA is cool.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-body">
+        <button type="button" class="btn btn-primary submit_job" id="serda_submit">Start Normalization</button>
+        You can click button to start normalization.
+        <div class="row">
+          <div class='col-sm-6'>
+            <div id="serda_pca_raw"></div>
+            <div id="serda_raw_performance">
+              <p>The median of cross-validated QC RSD across all compounds is: <span id="serda_rsdraw"></span>.</p>
+              <p># (%) of compounds with QC RSD &lt; 20%: <span id="serda_count_less_20_raw"></span> (<span
+                  id="serda_perc_less_20_raw"></span>).</p>
+              <div class="with_validate">
+                <p>The median of validate RSD across all compounds is: <span id="serda_rsdvalidateraw"></span>.</p>
+                <p># (%) of compounds with validate RSD &lt; 20%: <span id="serda_count_less_20_validate_raw"></span>
+                  (<span id="serda_perc_less_20_validate_raw"></span>) for <span class="unique_validates"></span>.</p>
+              </div>
+            </div>
+          </div>
+          <div class='col-sm-6'>
+            <div id="serda_pca_normalized"></div>
+            <div id="serda_normalized_performance">
+              <p>The median of cross-validated QC RSD across all compounds is: <span id="serda_rsdnormalized"></span>.
+              </p>
+              <p># (%) of compounds with QC RSD &lt; 20%: <span id="serda_count_less_20_normalized"></span> (<span
+                  id="serda_perc_less_20_normalized"></span>).</p>
+              <div class="with_validate">
+                <p>The median of validate RSD across all compounds is: <span id="serda_rsdvalidatenormalized"></span>.
+                </p>
+                <p># (%) of compounds with validate RSD &lt; 20%: <span
+                    id="serda_count_less_20_validate_normalized"></span>
+                  (<span id="serda_perc_less_20_validate_normalized"></span>) for <span
+                    class="unique_validates"></span>.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+
+
+
+
+
+
+    </div> -->
+
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-108366054-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+
+      gtag('config', 'UA-108366054-1');
+    </script>
+
+
+
+    <footer
+      style="position: fixed;right: 0;bottom: 0;left: 0;padding: 1rem;margin:0;text-align: center;background-color:#1A3E68;border-color:transparent">
+      <b><a href="http://www.metabolomics.ucdavis.edu" target="_blank" style="color:white">FiehnLab</a></b>
+    </footer>
   </div>
 
-  <div class="page-body">
-    <button type="button" class="btn btn-primary submit_job" id="serda_submit">Start Normalization</button>
-    You can click button to start normalization.
-    <div class="row">
-      <div class='col-sm-6'>
-        <div id="serda_pca_raw"></div>
-      </div>     
-    </div>
-    
-  </div>
+  <!--<div id="world-map" style="width: 600px; height: 400px"></div>-->
+  <script>
+    $(document).ready(function () {
+
+      // dynamodb = 1;
+      // ocpu.call("get_key", {}, function (session) {
+      //   session.getObject(function (obj) {
+      //     dynamodb = new AWS.DynamoDB({
+      //       accessKeyId: obj.access_key_id[0],
+      //       secretAccessKey: obj.secret_access_key[0],
+      //       endpoint: "https://dynamodb.us-west-1.amazonaws.com",
+      //       region: "us-west-1"
+      //     });
+
+
+      //   })
+      // })
+
+
+
+      task_id = "1593110039";
+      normalization_method = 'serda'
+
+      color_sequence = ['green', 'blue', 'orange'] // for validates
+
+
+      $('#input_example_file').change(function () {
+        if (this.checked) {
+          $("#input_file_uploaded").show()
+        } else {
+          $("#input_file_uploaded").hide()
+        }
+        $('#input_example_file').val(this.checked);
+      });
 
 
 
 
+      $("#input_file").change(function () {
 
+        file = $("#input_file")[0].files[0]
+        if (".csv" !== file.name.substr(file.name.length - 4)) {
+          alert("Input data has to be in the .csv file. Please see the example dataset 'Explanation'.")
+          return;
+        }
 
+        $("#input_file_uploaded").css("display", "inline-block")
+        $("#input_file_uploaded").html("<i  class=\"fa fa-spinner fa-spin\" ></i>");
 
-</div>
+        var req = ocpu.call("input_file", {
+          file: file
+        }, function (session) {
+          s = session
+          console.log(session)
+          session.getObject(function (obj) {
+            task_id = obj.task_id[0]
+            new_bin_id_matching = obj.new_bin_id_matching[0]
+            console.log(obj.time_consumed)
+          })
+          $("#input_file_uploaded").html("<p class='text-success'>Good! The Dataset is loaded and ready for normalization.</p>")
+        }).done(function () {
 
-
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-108366054-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-108366054-1');
-</script>
-
-
-
-<footer style="position: fixed;right: 0;bottom: 0;left: 0;padding: 1rem;margin:0;text-align: center;background-color:#1A3E68;border-color:transparent">
-  <b><a href="http://www.metabolomics.ucdavis.edu" target="_blank" style="color:white">FiehnLab</a></b>
-</footer>
-</div>
-
-<!--<div id="world-map" style="width: 600px; height: 400px"></div>-->
-<script>
-$(document).ready(function(){
-      dynamodb=1;
-      ocpu.call("get_key",{},function(session){
-        session.getObject(function(obj){
-          dynamodb = new AWS.DynamoDB({
-              accessKeyId:obj.access_key_id[0],
-              secretAccessKey:obj.secret_access_key[0],
-              endpoint:"https://dynamodb.us-west-1.amazonaws.com",
-              region : "us-west-1"
-            });
-
+        }).fail(function () {
 
         })
       })
 
 
+      $("#submit_job").click(function (event) {
+        var normalization_method = event.target.id.replace("_submit", '')
+        console.log(event.target.id)
+        var req = ocpu.call("submit_job", {
+          task_id: task_id,
+          normalization_method: normalization_method
+        }, function (session) {
+          s2 = session
+          console.log(session)
+          session.getObject(function (obj) {
+            console.log(obj.status[0])
 
-    data_id = "data_id";
-    normalization_method = 'serda'
-    $('[data-toggle="tooltip"]').tooltip();
-    $("#question").click(function(){
-      window.open('mailto:slfan@ucdavis.edu?subject=SERRF Question.&body=Dear Sili, I have a question about SERRF. Please help.');
-    })
+            if (obj.status[0] === 'success') {
+              // now start looking for result.
+              var check_project_status_interval = setInterval(function () {
+                console.log("Checking result.")
+                dynamodb.getItem({
+                  Key: {
+                    task_id: {
+                      S: task_id,
+                    },
+                    normalization_method: {
+                      S: normalization_method
+                    }
+                  },
+                  TableName: "SERDA_jobs"
+                }, function (err, data) {
+                  eee = err;
+                  ddd = data
+                  if (data.Item.status.S === 'done.') {
+                    clearInterval(check_project_status_interval);
+                    console.log("Job done.")
+                    // generate before/after PCA plot.
+                    // first, get the p.
+                    dynamodb.getItem({
+                      Key: {
+                        job_id: {
+                          S: task_id + "_" + normalization_method + "_result",
+                        },
+                        task_id: {
+                          S: task_id,
+                        }
+                      },
+                      TableName: "SERDA"
+                    }, function (err, data) {
+                      //f = JSON.parse(data.Item.data.S)
+                      ddd = data
 
 
 
-    $('#input_example_file').change(function() {
-        if(this.checked) {
-            $("#input_file_uploaded").show()
-        }else{
-          $("#input_file_uploaded").hide()
-        }
-        $('#input_example_file').val(this.checked);        
+                      var p = JSON.parse(data.Item.p.S)
+                      var f = JSON.parse(data.Item.f.S)
+
+                      var pca_raw = JSON.parse(data.Item.pca_raw.S)
+                      var pca_raw_var_exp = JSON.parse(data.Item.pca_raw_var_exp.S)
+                      var pca_normalized = JSON.parse(data.Item["pca_" + normalization_method].S)
+                      var pca_normalized_var_exp = JSON.parse(data.Item["pca_" + normalization_method + "_var_exp"].S)
+
+                      var unique_sampleType = p.sampleType.filter(unique)
+                      var with_validate = unique_sampleType.length > 2
+                      var unique_validates = delete_element_from_array(delete_element_from_array(unique_sampleType, "qc"), "sample")
+
+                      var raw_score_plot_dta = score_plot(pca_raw.PC1, pca_raw.PC2, pca_raw_var_exp[0], pca_raw_var_exp[1], null, p.sampleType, Array(p.sampleType.length).fill(""), ["red", "rgba(255, 255, 255, 0.1)"].concat(color_sequence.slice(0, unique_sampleType.length - 2)), ["circle"], ["qc", "sample"].concat(unique_validates), [""], p.label, 6, !1, !1, !1, [0.1, 0.1, 0.1])
+                      raw_score_plot_dta.layout.title = "Raw Data"
+
+                      Plotly.newPlot("serda_pca_raw", raw_score_plot_dta.data, raw_score_plot_dta.layout).then(function (db) {
+                        Plotly.toImage(db, {
+                          format: "svg"
+                        }).then(function (url) {
+                          uuu = url, uuu = uuu.replace(/^data:image\/svg\+xml,/, ""), uuu = decodeURIComponent(uuu), after_score_plot = btoa(unescape(encodeURIComponent(uuu)))
+                        })
+                      })
+
+
+                      var serda_score_plot_dta = score_plot(pca_normalized.PC1, pca_normalized.PC2, pca_normalized_var_exp[0], pca_normalized_var_exp[1], null, p.sampleType, Array(p.sampleType.length).fill(""), ["red", "rgba(255, 255, 255, 0.1)"].concat(color_sequence.slice(0, unique_sampleType.length - 2)), ["circle"], ["qc", "sample"].concat(unique_validates), [""], p.label, 6, !1, !1, !1, [0.1, 0.1, 0.1])
+                      serda_score_plot_dta.layout.title = "SERDA Normalized Data"
+
+
+                      Plotly.newPlot("serda_pca_normalized", serda_score_plot_dta.data, serda_score_plot_dta.layout).then(function (db) {
+                        Plotly.toImage(db, {
+                          format: "svg"
+                        }).then(function (url) {
+                          uuu = url, uuu = uuu.replace(/^data:image\/svg\+xml,/, ""), uuu = decodeURIComponent(uuu), after_score_plot = btoa(unescape(encodeURIComponent(uuu)))
+                        })
+                      })
+
+                      // After PCA show how the QCs before/after.
+
+                      var RSD_result_summary = JSON.parse(data.Item.RSD_result_summary.S)
+                      var RSD_table = JSON.parse(data.Item.RSD_table.S)
+
+
+
+                      $("#serda_rsdraw").text(RSD_result_summary.median_QC_raw_RSD)
+                      $("#serda_count_less_20_raw").text(RSD_result_summary.count_QC_raw_RSD)
+                      $("#serda_perc_less_20_raw").text(RSD_result_summary.perc_QC_raw_RSD)
+
+                      $("#serda_rsdnormalized").text(RSD_result_summary.median_QC_normalized_RSD)
+                      $("#serda_count_less_20_normalized").text(RSD_result_summary.count_QC_normalized_RSD)
+                      $("#serda_perc_less_20_normalized").text(RSD_result_summary.perc_QC_normalized_RSD)
+
+                      if (with_validate) {
+                        $(".with_validate").show()
+                        for (i = 0; i < unique_validates.length; i++) {
+                          if (i === 0) {
+                            var serda_rsdvalidateraw_text = RSD_result_summary["median_" + unique_validates[i] + "_raw_RSD"]
+                            var serda_count_less_20_validate_raw_text = RSD_result_summary["count_" + unique_validates[i] + "_raw_RSD"]
+                            var serda_perc_less_20_validate_raw_text = RSD_result_summary["perc_" + unique_validates[i] + "_raw_RSD"]
+
+                            var serda_rsdvalidatenormalized_text = RSD_result_summary["median_" + unique_validates[i] + "_normalized_RSD"]
+                            var serda_count_less_20_validate_normalized_text = RSD_result_summary["count_" + unique_validates[i] + "_normalized_RSD"]
+                            var serda_perc_less_20_validate_normalized_text = RSD_result_summary["perc_" + unique_validates[i] + "_normalized_RSD"]
+
+                          } else {
+                            serda_rsdvalidateraw_text = serda_rsdvalidateraw_text + ", " + RSD_result_summary["median_" + unique_validates[i] + "_raw_RSD"]
+                            serda_count_less_20_validate_raw_text = serda_count_less_20_validate_raw_text + ", " + RSD_result_summary["median_" + unique_validates[i] + "_raw_RSD"]
+                            serda_perc_less_20_validate_raw_text = serda_perc_less_20_validate_raw_text + ", " + RSD_result_summary["perc_" + unique_validates[i] + "_raw_RSD"]
+                            
+                            serda_rsdvalidatenormalized_text = serda_rsdvalidatenormalized_text + ", " + RSD_result_summary["median_" + unique_validates[i] + "_normalized_RSD"]
+                            serda_count_less_20_validate_normalized_text = serda_count_less_20_validate_normalized_text + ", " + RSD_result_summary["median_" + unique_validates[i] + "_normalized_RSD"]
+                            serda_perc_less_20_validate_normalized_text = serda_perc_less_20_validate_normalized_text + ", " + RSD_result_summary["perc_" + unique_validates[i] + "_normalized_RSD"]
+                          }
+
+
+                        }
+
+                        $("#serda_rsdvalidateraw").text(serda_rsdvalidateraw_text)
+                        $("#serda_count_less_20_validate_raw").text(serda_count_less_20_validate_raw_text)
+                        $("#serda_perc_less_20_validate_raw").text(serda_perc_less_20_validate_raw_text)
+                        $(".unique_validates").text(unique_validates.join(", "))
+
+
+                        $("#serda_rsdvalidatenormalized").text(serda_rsdvalidatenormalized_text)
+                        $("#serda_count_less_20_validate_normalized").text(serda_count_less_20_validate_normalized_text)
+                        $("#serda_perc_less_20_validate_normalized").text(serda_perc_less_20_validate_normalized_text)
+
+
+
+
+
+                      }
+
+
+
+
+
+
+
+                    })
+
+
+
+                  } else {
+                    console.log("waiting " + data_id + " " + normalization_method + ".")
+                  }
+                }, 5000)
+              })
+
+            } else {
+              alert("Error")
+            }
+
+
+
+
+          })
+
+        }).done(function () {
+
+        }).fail(function () {
+
+        })
+
+
+      })
+
+
+
+
+
     });
 
 
+  </script>
+  <!--<script src="ml12122019.js"></script>-->
 
 
-    $("#input_file").change(function() {
+  <script src="local.min.js"></script>
 
-      file = $("#input_file")[0].files[0]
-      if(".csv"!==file.name.substr(file.name.length - 4)){
-        alert("Input data has to be in the .csv file. Please see the example dataset 'Explanation'.")
-        return;
-      }
+  <script src="https://smtpjs.com/v3/smtp.js"></script>
+  <!--OpenCPU-->
+  <!-- <script src="opencpu-0.5-local.js"></script> -->
 
-      $("#input_file_uploaded").css("display", "inline-block")
-      $("#input_file_uploaded").html("<i  class=\"fa fa-spinner fa-spin\" ></i>");
-      
-      var req=ocpu.call("input_file",{
-        file:file
-      },function(session){
-        s = session
-        console.log(session)
-        session.getObject(function(obj){
-          data_id = obj.data_id[0]
-          console.log(obj.time_consumed)
-        })
-        $("#input_file_uploaded").html("<p class='text-success'>Good! The Dataset is loaded and ready for normalization.</p>")
-      }).done(function(){
+  <script src="//cdn.opencpu.org/opencpu-0.4.js"></script>
 
-      }).fail(function(){
+  <script src="https://sdk.amazonaws.com/js/aws-sdk-2.7.16.min.js"></script>
 
-      })
-
-
-
-
-    })
-
-
-    $(".submit_job").click(function(event){
-      var normalization_method = event.target.id.replace("_submit", '')
-      console.log(event.target.id)
-      var req=ocpu.call("submit_job",{
-        data_id:data_id,
-        normalization_method:normalization_method
-      },function(session){
-        s2 = session
-        console.log(session)
-        session.getObject(function(obj){
-          console.log(obj.status[0])
-
-          if(obj.status[0] === 'success'){
-            // now start looking for result.
-            var param = {
-              Key:{
-                job_id:{
-                  S: data_id+"_"+normalization_method+"_result",
-                },
-                data_id:{
-                  S: String(data_id)
-                }
-              },
-              TableName:"SERDA"
-            }
-            dynamodb.getItem(param,function(err, data){
-              e = err
-              d = data
-
-
-              var pca_raw = JSON.parse(d.Item['pca_'+normalization_method].S)
-              window["pca_"+normalization_method] = JSON.parse(d.Item["pca_"+normalization_method].S)
-              window["QC_cv_RSDs_"+normalization_method] = JSON.parse(d.Item.QC_cv_RSDs.S)[0]
-              window["validates_RSDs_"+normalization_method] = JSON.parse(d.Item.validates_RSDs.S)
-
-              // !!! print PCA.
-              var trace1 = {
-                x: [1, 2, 3, 4],
-                y: [10, 15, 13, 17],
-                mode: 'markers',
-                type: 'scatter'
-              };
-
-              var trace2 = {
-                x: [2, 3, 4, 5],
-                y: [16, 5, 11, 9],
-                mode: 'lines',
-                type: 'scatter'
-              };
-
-              var trace3 = {
-                x: [1, 2, 3, 4],
-                y: [12, 9, 15, 12],
-                mode: 'lines+markers',
-                type: 'scatter'
-              };
-
-              var data = [trace1, trace2, trace3];
-
-              Plotly.newPlot('serda_pca_raw', data);
-
-            })
-
-
-          }else{
-            alert("Error")
-          }
-
-        })
-        
-      }).done(function(){
-
-      }).fail(function(){
-
-      })
-
-
-    })
-
-
-
-
-
-});
-
-
-</script>
-<!--<script src="ml12122019.js"></script>-->
-
-
-<script src="local.min.js"></script>
-
-<script src="https://smtpjs.com/v3/smtp.js"></script>
-<!--OpenCPU
-<script src="opencpu-0.5-local.js"></script>-->
-
-<!----><script src="//cdn.opencpu.org/opencpu-0.4.js"></script>
-
-<script src="https://sdk.amazonaws.com/js/aws-sdk-2.7.16.min.js"></script>
+  <script src="myJS.min.js"></script>
 
 </body>
 

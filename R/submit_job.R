@@ -18,20 +18,28 @@ submit_job <- function(data_id = "1592676776", normalization_method = "serda") {
   pacman::p_load(paws.database, jsonlite)
   data_id = as.character(data_id)
 
-  job_id = as.integer(Sys.time())
+  # job_id = as.integer(Sys.time())
 
   # create table.
   # svc$create_table(
   #   AttributeDefinitions = list(
   #     list(
-  #       AttributeName = "job_id",
+  #       AttributeName = "data_id",
+  #       AttributeType = "S"
+  #     ),
+  #     list(
+  #       AttributeName = "normalization_method",
   #       AttributeType = "S"
   #     )
   #   ),
   #   KeySchema = list(
   #     list(
-  #       AttributeName = "job_id",
+  #       AttributeName = "data_id",
   #       KeyType = "HASH"
+  #     ),
+  #     list(
+  #       AttributeName = "normalization_method",
+  #       KeyType = "RANGE"
   #     )
   #   ),
   #   ProvisionedThroughput = list(
@@ -48,7 +56,6 @@ submit_job <- function(data_id = "1592676776", normalization_method = "serda") {
     config = list(
       credentials = list(
         creds = get_key()
-        # ,profile = "string"
       ),
       endpoint = "https://dynamodb.us-west-1.amazonaws.com",
       region = "us-west-1"
@@ -58,10 +65,9 @@ submit_job <- function(data_id = "1592676776", normalization_method = "serda") {
 
   svc$put_item(
     Item = list(
-      job_id = list(S = job_id),
+      data_id = list(S = data_id),
       normalization_method = list(S = normalization_method),
-      status = list(S = "waiting_to_be_normalized"),
-      data_id = list(S = data_id)
+      status = list(S = "waiting_to_be_normalized")
     ),
     ReturnConsumedCapacity = "TOTAL",
     TableName = "SERDA_jobs"
