@@ -1,82 +1,35 @@
-# Hello, world!
-#
-# This is an example function named 'hello'
-# which prints 'Hello, world!'.
-#
-# You can learn more about package authoring with RStudio at:
-#
-#   http://r-pkgs.had.co.nz/
-#
-# Some useful keyboard shortcuts for package authoring:
-#
-#   Install Package:           'Ctrl + Shift + B'
-#   Check Package:             'Ctrl + Shift + E'
-#   Test Package:              'Ctrl + Shift + T'
 
-submit_job <- function(data_id = "1592676776", normalization_method = "serda") {
+submit_job <- function(task_id = "1594672239", normalization_method = "serda",new_bin_id_matching) {
   # normalization_method = "serda"
   pacman::p_load(paws.database, jsonlite)
-  data_id = as.character(data_id)
+  task_id = as.character(task_id)
+  bin_id_matching_id = "5f0ca06aa62f9b4b276448ed"
+  collection_id = "5f07e238a62f9b4b27621ce6"
 
-  # job_id = as.integer(Sys.time())
 
-  # create table.
-  # svc$create_table(
-  #   AttributeDefinitions = list(
-  #     list(
-  #       AttributeName = "data_id",
-  #       AttributeType = "S"
-  #     ),
-  #     list(
-  #       AttributeName = "normalization_method",
-  #       AttributeType = "S"
-  #     )
-  #   ),
-  #   KeySchema = list(
-  #     list(
-  #       AttributeName = "data_id",
-  #       KeyType = "HASH"
-  #     ),
-  #     list(
-  #       AttributeName = "normalization_method",
-  #       KeyType = "RANGE"
-  #     )
-  #   ),
-  #   ProvisionedThroughput = list(
-  #     ReadCapacityUnits = 500L,
-  #     WriteCapacityUnits = 500L
-  #   ),
-  #   TableName = "SERDA_jobs"
-  # )
+  # First, add method to the bin by: create a bin in the collection ...ce6 with name task_id + method
+  status_method = fromJSON(RCurl::getURL("https://api.jsonbin.io/b", customrequest='POST', httpheader=c('Content-Type'='application/json','secret-key'=get_key(),name = paste0(task_id, "-method" )), postfields = jsonlite::toJSON(list(paste0(normalization_method,collapse = ",")),auto_unbox = TRUE,force = TRUE)))
+
+  # Second, add status to be "waiting_in_queue".
+  status_status = fromJSON(RCurl::getURL("https://api.jsonbin.io/b", customrequest='POST', httpheader=c('Content-Type'='application/json','secret-key'=get_key(),name = paste0(task_id, "-status" )), postfields = jsonlite::toJSON(list("waiting_in_queue"),auto_unbox = TRUE,force = TRUE)))
+
+
+  # Third, add new jobs to the bin_id_matching
+  # 1. Get the bin.
+  bin_id_matching = fromJSON(RCurl::getURL(paste0("https://api.jsonbin.io/b/",bin_id_matching_id), customrequest='GET', httpheader=c('secret-key'=get_key())))
+  # 2. Update the bin.
+  updated_bin_id_matching = rbind(bin_id_matching, new_bin_id_matching)
+  updated_bin_id_matching = rbind(updated_bin_id_matching,data.frame(id = status_method$id,binName = paste0(task_id, "-method")))
+  updated_bin_id_matching = rbind(updated_bin_id_matching,data.frame(id = status_status$id,binName = paste0(task_id, "-status")))
+
+
+  status_update = fromJSON(RCurl::getURL(paste0("https://api.jsonbin.io/b/",bin_id_matching_id), customrequest='PUT', httpheader=c('Content-Type'='application/json','secret-key'=get_key()), postfields = jsonlite::toJSON(updated_bin_id_matching,auto_unbox = TRUE,force = TRUE)))
+
+  # Fourth, create a new collection-id, so that we can know when the normalization is finished.
+  status_create_collection = fromJSON(RCurl::getURL("https://api.jsonbin.io/c", customrequest='POST', httpheader=c('Content-Type'='application/json','secret-key'=get_key()),postfields = jsonlite::toJSON(list(name = paste0(task_id,"-collection")),auto_unbox = TRUE,force = TRUE)))
 
 
 
-  #   # Put data to cloud.
-  svc <- dynamodb(
-    config = list(
-      credentials = list(
-        creds = get_key()
-      ),
-      endpoint = "https://dynamodb.us-west-1.amazonaws.com",
-      region = "us-west-1"
-    )
-  )
+  return(list(status = ifelse(status_update$success,"success","failed"), collection_id = status_create_collection$id))
 
-
-  svc$put_item(
-    Item = list(
-      data_id = list(S = data_id),
-      normalization_method = list(S = normalization_method),
-      status = list(S = "waiting_to_be_normalized")
-    ),
-    ReturnConsumedCapacity = "TOTAL",
-    TableName = "SERDA_jobs"
-  )
-
-
-
-
-
-
-  return(list(status = "success"))
 }

@@ -58,6 +58,7 @@ input_file <- function(file = "P20 positive mode FULL.csv") {
   # put the job_id relation to collection id.
   if(out$error == 0){# if there is no error, put the job_id information to the collection.
 
+    print(length(new_bin_id_matching))
     return(list(new_bin_id_matching=new_bin_id_matching,task_id = task_id))
 
   }else{

@@ -226,6 +226,7 @@ hello <- function() {
     url = paste0("https://api.jsonbin.io/e/collection/",collection_id,"/all-bins")
     headers=c('secret-key'=get_key())
     all_bin_result = fromJSON(RCurl::getURL(url, customrequest='GET', httpheader=headers))
+    nrow(all_bin_result$records)
     print(Sys.time() - start)
   #
   #   # check if number of bins increased. If so, then it means a new job is submitted.
@@ -305,4 +306,61 @@ hello <- function() {
   # if(out$error == 0){
   #   fromJSON(RCurl::getURL("https://api.jsonbin.io/b/", customrequest='POST', httpheader=c('Content-Type'='application/json','secret-key'=get_key(),name = paste0(task_id,"-methods"),"collection-id" = collection_id), postfields = jsonlite::toJSON(list(methods = ""),auto_unbox = TRUE,force = TRUE)))
   # }
+
+
+    # job_id = as.integer(Sys.time())
+
+    # create table.
+    # svc$create_table(
+    #   AttributeDefinitions = list(
+    #     list(
+    #       AttributeName = "task_id",
+    #       AttributeType = "S"
+    #     ),
+    #     list(
+    #       AttributeName = "normalization_method",
+    #       AttributeType = "S"
+    #     )
+    #   ),
+    #   KeySchema = list(
+    #     list(
+    #       AttributeName = "task_id",
+    #       KeyType = "HASH"
+    #     ),
+    #     list(
+    #       AttributeName = "normalization_method",
+    #       KeyType = "RANGE"
+    #     )
+    #   ),
+    #   ProvisionedThroughput = list(
+    #     ReadCapacityUnits = 500L,
+    #     WriteCapacityUnits = 500L
+    #   ),
+    #   TableName = "SERDA_jobs"
+    # )
+
+
+
+    #   # Put data to cloud.
+    # svc <- dynamodb(
+    #   config = list(
+    #     credentials = list(
+    #       creds = get_key()
+    #     ),
+    #     endpoint = "https://dynamodb.us-west-1.amazonaws.com",
+    #     region = "us-west-1"
+    #   )
+    # )
+    #
+    #
+    # svc$put_item(
+    #   Item = list(
+    #     task_id = list(S = task_id),
+    #     normalization_method = list(S = normalization_method),
+    #     status = list(S = "waiting_to_be_normalized")
+    #   ),
+    #   ReturnConsumedCapacity = "TOTAL",
+    #   TableName = "SERDA_jobs"
+    # )
+    #
 }

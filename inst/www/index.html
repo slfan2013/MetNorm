@@ -370,7 +370,6 @@
 
 
 
-      task_id = "1593110039";
       normalization_method = 'serda'
 
       color_sequence = ['green', 'blue', 'orange'] // for validates
@@ -406,8 +405,7 @@
           console.log(session)
           session.getObject(function (obj) {
             task_id = obj.task_id[0]
-            new_bin_id_matching = obj.new_bin_id_matching[0]
-            console.log(obj.time_consumed)
+            new_bin_id_matching = obj.new_bin_id_matching
           })
           $("#input_file_uploaded").html("<p class='text-success'>Good! The Dataset is loaded and ready for normalization.</p>")
         }).done(function () {
@@ -419,18 +417,28 @@
 
 
       $("#submit_job").click(function (event) {
+
+        if(typeof task_id == "undefined" || typeof new_bin_id_matching == "undefined"){
+
+          alert("Dataset not found. \r\nUpload a dataset or Use the Example Dataset.")
+
+          return;
+        }
+
+
         var normalization_method = event.target.id.replace("_submit", '')
         console.log(event.target.id)
         var req = ocpu.call("submit_job", {
           task_id: task_id,
-          normalization_method: normalization_method
+          normalization_method: normalization_method,
+          new_bin_id_matching:new_bin_id_matching
         }, function (session) {
           s2 = session
           console.log(session)
           session.getObject(function (obj) {
             console.log(obj.status[0])
 
-            if (obj.status[0] === 'success') {
+            if (obj.status[0] === 'success2') {
               // now start looking for result.
               var check_project_status_interval = setInterval(function () {
                 console.log("Checking result.")
