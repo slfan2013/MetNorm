@@ -13,4 +13,7 @@ Imports:
     pacman,
     paws.database,
 	jsonlite,
-	stringi
+	stringi,
+	data.table,
+	curl,
+	magrittr

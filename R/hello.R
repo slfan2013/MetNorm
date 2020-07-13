@@ -223,10 +223,10 @@ hello <- function() {
   # get all bin from a collection
   # while(TRUE){
   #   start = Sys.time()
-  #   url = paste0("https://api.jsonbin.io/e/collection/",collection_id,"/all-bins")
-  #   headers=c('secret-key'=get_key())
-  #   all_bin_result = fromJSON(RCurl::getURL(url, customrequest='GET', httpheader=headers))
-  #   print(Sys.time() - start)
+    url = paste0("https://api.jsonbin.io/e/collection/",collection_id,"/all-bins")
+    headers=c('secret-key'=get_key())
+    all_bin_result = fromJSON(RCurl::getURL(url, customrequest='GET', httpheader=headers))
+    print(Sys.time() - start)
   #
   #   # check if number of bins increased. If so, then it means a new job is submitted.
   #   new_bin_added = FALSE
