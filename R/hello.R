@@ -223,9 +223,10 @@ hello <- function() {
   # get all bin from a collection
   # while(TRUE){
   #   start = Sys.time()
+  collection_id = "5f07e238a62f9b4b27621ce6"
     url = paste0("https://api.jsonbin.io/e/collection/",collection_id,"/all-bins")
     headers=c('secret-key'=get_key())
-    all_bin_result = fromJSON(RCurl::getURL(url, customrequest='GET', httpheader=headers))
+    all_bin_result = jsonlite::fromJSON(RCurl::getURL(url, customrequest='GET', httpheader=headers))
     nrow(all_bin_result$records)
     print(Sys.time() - start)
   #

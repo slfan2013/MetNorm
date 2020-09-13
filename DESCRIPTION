@@ -16,4 +16,5 @@ Imports:
 	stringi,
 	data.table,
 	curl,
-	magrittr
+	magrittr,
+	zip

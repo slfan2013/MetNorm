@@ -99,237 +99,130 @@
         <div class="row">
           <div class="col-lg-12">
             <h1>Metabolomics Data Normalization</h1>
-            <p class="lead">Here is a collection of popular normalization methods for metabolomics dataset. 1:20 7.13</p>
+            <p class="lead">Here is a collection of popular normalization methods for metabolomics dataset. 1:40
+              9/12/2020
+            </p>
           </div>
         </div>
       </div>
       <div class="panel-group">
         <div class="panel panel-default">
-          <div class='panel-header'>
+          <div class='panel-heading'>
             Input
           </div>
           <div class="panel-body">
-              <div class="row">
-                <div class="col-sm-6">
-                  <div class="form-group">
-                    <label for="exampleFormControlFile1">Upload a Dataset</label>
-                    <input id="input_file" type="file" class="form-control-file" accept=".csv">
-                    <em>An example dataset is available for download <a href="#">here</a>.</em>
-                  </div>
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="input_file">Upload a Dataset</label>
+                  <input id="input_file" type="file" class="form-control-file disable_in_progress" accept=".csv">
+
                 </div>
-                <div class="col-sm-6">
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="input_example_file" />
-                    <label class="form-check-label" for="input_example_file">
-                      or Use the Example Dataset
-                    </label>
-                  </div>
+                <div class="form-check">
+                  <input class="form-check-input disable_in_progress" type="checkbox" value=""
+                    id="input_example_file" />
+                  <label class="form-check-label" for="input_example_file">
+                    or Use the Example Dataset
+                  </label>
                 </div>
               </div>
-              
-              
+              <div class="col-sm-6">
+                <em>An example dataset is available for download <a href="#">here</a>.</em>
 
-            <p class="text-success" id="input_example_file_uploaded" hidden>The Dataset is loaded and ready for
+              </div>
+            </div>
+
+
+
+            <p class="text-success" id="input_example_file_uploaded" hidden>The Dataset is uploaded and ready for
               normalization.</p>
-            <p class='uploaded' style="display: none;" id='input_file_uploaded' disabled>uploaded</p>
+            <p class='uploaded' style="display: none;" id='input_file_uploaded' disabled></p>
           </div>
         </div>
 
 
-        
+
         <div class="panel panel-default">
-          <div class='panel-header'>
+          <div class='panel-heading'>
             Methods
           </div>
           <div class="panel-body">
+            <table class="table table-bordered">
+              <tbody>
+                <tr>
+                  <td>
+                    <div>
+                      <input type="checkbox" id="serda" name="serda" checked class='methods disable_in_progress'>
+                      <label for="serda">SERDA</label>
+                    </div>
+                  </td>
+                  <td>Systematic Error Removal using Denoising Autoencoder</td>
+                  <td>paperlink</td>
+                </tr>
+                <tr>
+                  <td>
+                    <div>
+                      <input type="checkbox" id="serrf" name="serrf" checked class='methods disable_in_progress'>
+                      <label for="serrf">SERRF</label>
+                    </div>
+                  </td>
+                  <td>Systematic Error Removal using Random Forest</td>
+                  <td>paperlink</td>
+                </tr>
+                <tr>
+                  <td>
+                    <div>
+                      <input type="checkbox" id="mtic" name="mtic" checked class='methods disable_in_progress'>
+                      <label for="mtic">mTIC</label>
+                    </div>
+                  </td>
+                  <td>the Bird</td>
+                  <td>paperlink</td>
+                </tr>
+                <tr>
+                  <td>
+                    <div>
+                      <input type="checkbox" id="sum" name="sum" checked class='methods disable_in_progress'>
+                      <label for="sum">sum</label>
+                    </div>
+                  </td>
+                  <td>Sum Normalization</td>
+                  <td>paperlink</td>
+                </tr>
+              </tbody>
+            </table>
             <form>
-              <input type="checkbox" id="serda" name="serda" value="Bike">
-              <label for="serda"> SERDA</label><br>
-              <input type="checkbox" id="serrf" name="serrf" value="Car">
-              <label for="serrf"> SERRF</label><br>
-              <input type="checkbox" id="mtic" name="mtic" value="Boat">
-              <label for="mtic"> mTIC</label><br><br>
-              <button type="button" class="btn btn-primary submit_job" id="submit_job">Start Normalization</button>
+
+
+              <button type="button" class="btn btn-primary submit_job disable_in_progress" id="submit_job">Start
+                Normalization</button>
+              <p id='status'></p>
             </form>
 
-            <p class="text-success" id="input_example_file_uploaded" hidden>The Dataset is loaded and ready for
-              normalization.</p>
-            <p class='uploaded' style="display: none;" id='input_file_uploaded' disabled>uploaded</p>
           </div>
         </div>
 
+        <div id='dynamic_panels'></div>
+
+
+        <div class="panel panel-default" hidden id="download_results_panel">
+          <div class='panel-heading'>
+            <p>Downloads</p>
+          </div>
+          <div class="panel-body">
+            <p id="waiting_result_text">(Waiting Results.)</p>
+            <button type="button" class="btn btn-primary disable_in_progress" id="download_results">Download
+              Results</button>
+          </div>
+        </div>
 
 
 
 
         <br /><br /><br />
-        <!--<button id = "test">test</button>-->
 
       </div>
     </div>
-<!-- 
-    <div id="SERRF" class="tabcontent" style="display: none;">
-      <div class="page-header">
-
-        <div class="row" id="intro">
-          <div class="col-lg-6">
-            <h1>SERRF</h1>
-            <p class="lead">Normalize your data with SERRF.</p>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-lg-12">
-            <p>Using SERRF is easy. Just prepare your dataset the same format with the <a
-                href="SERRF example dataset.xlsx">example dataset</a>, and upload it by clicking the "Choose File"
-              button. When the dataset is successfully uploaded, simply click the "Start SERRF" button. A few minutes
-              later, you'll have your normalized dataset ready to download. Also, feel free to try our one-for-all <a
-                href="https://github.com/slfan2013/SERRF-online/raw/master/backup%20js/normalization.R">R code</a>. <a
-                href="#" id="question">Still have questions?</a></p>
-          </div>
-        </div>
-      </div>
-
-      <input id="input" type="file" disabled>
-      
-
-      <p style="color:red; display:inlink;"><b>Please click this <a
-            href="https://slfan.shinyapps.io/ShinySERRF/">link</a> to go to our temperal website for SERRF. The
-          underlining normalization code is same.</b></p>
-
-      <p style="color:orange; display:inline;">The main server is under maintenance. Not sure when this update finish.
-        Feel free to try our R code (see second line of the only paragraph on this page).</p>
-      <div class='uploaded' style="display: none;" id='warningMessage'></div>
-      <p style="color:white;font-size:1%;margin:0;padding:0">.</p>
-
-
-
-
-
-      <p class='uploaded' style="display: none;" id='uploadedText' disabled>uploaded</p>
-      <br />
-      <button href="#" class="btn btn-primary btn-sm btn-block" style="display:none" id="apply"><span
-          id='applyText'>Start SERRF</span></button>
-      <p id="progress" style='color:white'></p>
-
-      <div class="row done">
-
-
-        <div id='finishtext'></div><br />
-
-        <div class="col-md-6">
-          <div id="before_pca"></div>
-          <p><b>Figure1.</b> Principal Component Analysis score plot using the raw data.</p>
-          <p>The median of QC RSD across all compounds is: <span id="rsdraw"></span>.</p>
-          <p># (%) of compounds with QC RSD &lt; 20%: <span id="count_less_20_raw"></span> (<span
-              id="perc_less_20_raw"></span>).</p>
-          <div class="with_validate">
-            <p>The median of validate RSD across all compounds is: <span id="rsdvalidateraw"></span>.</p>
-            <p># (%) of compounds with validate RSD &lt; 20%: <span id="count_less_20_validate_raw"></span> (<span
-                id="perc_less_20_validate_raw"></span>).</p>
-          </div>
-
-
-          <p></p>
-        </div>
-        <div class="col-md-6">
-          <div id="after_pca"></div>
-          <p><b>Figure2.</b> Principal Component Analysis score plot using the SERRF normalized data.</p>
-          <p>The median of QC RSD across all compounds is: <span id="rsdSERRF"></span>.</p>
-          <p># (%) of compounds with QC RSD &lt; 20%: <span id="count_less_20_SERRF"></span> (<span
-              id="perc_less_20_SERRF"></span>).</p>
-
-          <div class="with_validate">
-            <p>The median of validate RSD across all compounds is: <span id="rsdvalidateSERRF"></span>.</p>
-            <p># (%) of compounds with validate RSD &lt; 20%: <span id="count_less_20_validate_SERRF"></span> (<span
-                id="perc_less_20_validate_SERRF"></span>).</p>
-          </div>
-
-
-          <p></p>
-        </div>
-      </div>
-
-      <div class="row">
-        <table id='result_datatable' class="display"></table>
-      </div>
-      <div id="scatter_plot"></div>
-      <button class="btn btn-primary btn-sm done" id="download"><span id='downloadText'>Download
-          Results</span></button><br />
-      <p class='done' id="asking_feedback">
-        Thank you! Was SERRF helpful? <a href="javascript:void(0)" id="feedback_yes">Yes</a>, <a
-          href="javascript:void(0)" id="feedback_no">No</a>.</p>
-      <p id="feedback_response"></p>
-      <p></p>
-      <p></p>
-      <p></p><br />
-
-    </div>
-
-    <div id="SERDA" class="tabcontent" style="display: none;">
-
-
-      <div class="page-header">
-
-        <div class="row" id="intro">
-          <div class="col-lg-6">
-            <h1>SERDA</h1>
-            <p class="lead">Systematic Error Removal using Denoising Autoencoder.</p>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-lg-12">
-            <p>SERDA is cool.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="page-body">
-        <button type="button" class="btn btn-primary submit_job" id="serda_submit">Start Normalization</button>
-        You can click button to start normalization.
-        <div class="row">
-          <div class='col-sm-6'>
-            <div id="serda_pca_raw"></div>
-            <div id="serda_raw_performance">
-              <p>The median of cross-validated QC RSD across all compounds is: <span id="serda_rsdraw"></span>.</p>
-              <p># (%) of compounds with QC RSD &lt; 20%: <span id="serda_count_less_20_raw"></span> (<span
-                  id="serda_perc_less_20_raw"></span>).</p>
-              <div class="with_validate">
-                <p>The median of validate RSD across all compounds is: <span id="serda_rsdvalidateraw"></span>.</p>
-                <p># (%) of compounds with validate RSD &lt; 20%: <span id="serda_count_less_20_validate_raw"></span>
-                  (<span id="serda_perc_less_20_validate_raw"></span>) for <span class="unique_validates"></span>.</p>
-              </div>
-            </div>
-          </div>
-          <div class='col-sm-6'>
-            <div id="serda_pca_normalized"></div>
-            <div id="serda_normalized_performance">
-              <p>The median of cross-validated QC RSD across all compounds is: <span id="serda_rsdnormalized"></span>.
-              </p>
-              <p># (%) of compounds with QC RSD &lt; 20%: <span id="serda_count_less_20_normalized"></span> (<span
-                  id="serda_perc_less_20_normalized"></span>).</p>
-              <div class="with_validate">
-                <p>The median of validate RSD across all compounds is: <span id="serda_rsdvalidatenormalized"></span>.
-                </p>
-                <p># (%) of compounds with validate RSD &lt; 20%: <span
-                    id="serda_count_less_20_validate_normalized"></span>
-                  (<span id="serda_perc_less_20_validate_normalized"></span>) for <span
-                    class="unique_validates"></span>.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-
-
-
-
-
-
-    </div> -->
 
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -354,23 +247,6 @@
   <script>
     $(document).ready(function () {
 
-      // dynamodb = 1;
-      // ocpu.call("get_key", {}, function (session) {
-      //   session.getObject(function (obj) {
-      //     dynamodb = new AWS.DynamoDB({
-      //       accessKeyId: obj.access_key_id[0],
-      //       secretAccessKey: obj.secret_access_key[0],
-      //       endpoint: "https://dynamodb.us-west-1.amazonaws.com",
-      //       region: "us-west-1"
-      //     });
-
-
-      //   })
-      // })
-
-
-
-      normalization_method = 'serda'
 
       color_sequence = ['green', 'blue', 'orange'] // for validates
 
@@ -388,15 +264,16 @@
 
 
       $("#input_file").change(function () {
-
+        $(".disable_in_progress").attr("disabled", true);
         file = $("#input_file")[0].files[0]
         if (".csv" !== file.name.substr(file.name.length - 4)) {
           alert("Input data has to be in the .csv file. Please see the example dataset 'Explanation'.")
+          $(".disable_in_progress").attr("disabled", false);
           return;
         }
 
         $("#input_file_uploaded").css("display", "inline-block")
-        $("#input_file_uploaded").html("<i  class=\"fa fa-spinner fa-spin\" ></i>");
+        $("#input_file_uploaded").html("<i  class=\"fa fa-spinner fa-spin\" ></i> <span class='rainbow'>Uploading...</span>");
 
         var req = ocpu.call("input_file", {
           file: file
@@ -407,182 +284,346 @@
             task_id = obj.task_id[0]
             new_bin_id_matching = obj.new_bin_id_matching
           })
-          $("#input_file_uploaded").html("<p class='text-success'>Good! The Dataset is loaded and ready for normalization.</p>")
-        }).done(function () {
-
+          $("#input_file_uploaded").html("<p class='text-success'>Good! The Dataset is uploaded and ready for normalization.</p>")
+          $(".disable_in_progress").attr("disabled", false);
         }).fail(function () {
-
+          $(".disable_in_progress").attr("disabled", false);
         })
       })
 
 
       $("#submit_job").click(function (event) {
-
-        if(typeof task_id == "undefined" || typeof new_bin_id_matching == "undefined"){
+        if (typeof task_id == "undefined" || typeof new_bin_id_matching == "undefined") {
 
           alert("Dataset not found. \r\nUpload a dataset or Use the Example Dataset.")
 
+          $("#submit_job").text("Start Normalization");
+          $("#submit_job").prop("disabled", false);
           return;
         }
+        $(".disable_in_progress").attr("disabled", true);
+        $("#submit_job").text("Normalization in Process");
+        $("#submit_job").prop("disabled", true);
+        $("#download_results_panel").show()
+        $("#waiting_result_text").text("(Waiting Results.)")
+
+        normalization_method = ['raw']
+        var dynamic_panel_html = ""
+        $(".methods").each(function () {
+          var $this = $(this);
+          if ($this.is(":checked")) {
+            normalization_method.push($this.attr("id"));
+          } else {
+
+          }
+        });
+        normalization_method.forEach(function (method) {
+          // Dynamically add normalization panels.
+          dynamic_panel_html = dynamic_panel_html + "<div class='panel panel-default' id='" + method + "_panel'>" +
+            "<div class='panel-heading'>" +
+            method +
+            "</div>" +
+            "<div class='panel-body'>" +
+            "<p id='" + method + "_status'>waiting in queue.</p>" +
+            "<div class='row'>" +
+            "<div class='col-sm-6'>" +
+            "<div id='" + method + "_pca_plot'></div>" +
+            "</div>" +
+            "<div class='col-sm-6'>" +
+            "<div id='" + method + "_result_description'></div>" +
+            "</div>" +
+            "</div>" +
+            "</div>" +
+            "</div>"
+        })
 
 
-        var normalization_method = event.target.id.replace("_submit", '')
-        console.log(event.target.id)
-        var req = ocpu.call("submit_job", {
+        $("#dynamic_panels").html(dynamic_panel_html)
+
+
+        ocpu.call("submit_job", {
           task_id: task_id,
           normalization_method: normalization_method,
-          new_bin_id_matching:new_bin_id_matching
+          new_bin_id_matching: new_bin_id_matching
         }, function (session) {
           s2 = session
           console.log(session)
           session.getObject(function (obj) {
-            console.log(obj.status[0])
 
-            if (obj.status[0] === 'success2') {
-              // now start looking for result.
-              var check_project_status_interval = setInterval(function () {
-                console.log("Checking result.")
-                dynamodb.getItem({
-                  Key: {
-                    task_id: {
-                      S: task_id,
-                    },
-                    normalization_method: {
-                      S: normalization_method
-                    }
-                  },
-                  TableName: "SERDA_jobs"
-                }, function (err, data) {
-                  eee = err;
-                  ddd = data
-                  if (data.Item.status.S === 'done.') {
-                    clearInterval(check_project_status_interval);
-                    console.log("Job done.")
-                    // generate before/after PCA plot.
-                    // first, get the p.
-                    dynamodb.getItem({
-                      Key: {
-                        job_id: {
-                          S: task_id + "_" + normalization_method + "_result",
-                        },
-                        task_id: {
-                          S: task_id,
-                        }
-                      },
-                      TableName: "SERDA"
-                    }, function (err, data) {
-                      //f = JSON.parse(data.Item.data.S)
-                      ddd = data
+            if (obj.status === undefined) {// this means there is an error.
+              alert(obj[0] + " Please do contact me at slfan at ucdavis dot edu if you need help.")
+              return;
+            }
+            ooo = obj
+            // new_collection_id = "5f10b280918061662842ea8c"
+            new_collection_id = obj.new_collection_id[0]
+            console.log("new_collection_id: " + new_collection_id)
+            if (obj.status[0] === 'success') {
+              unnormalized_methods = delete_element_from_array(normalization_method, 'raw')
+              $("#status").text("Working on " + unnormalized_methods[0] + " normalization.")
+
+              $("#" + unnormalized_methods[0] + "_status").html('<span class="rainbow">Calculating.</span>' + ' This may take a while. If failed, an error message will pop-up.')
 
 
 
-                      var p = JSON.parse(data.Item.p.S)
-                      var f = JSON.parse(data.Item.f.S)
+              pca_plot_url = {}
+              p = obj.p
+              f = obj.f
+              raw_info = obj.raw_info
+              pca_raw = raw_info.PCA
+              sampleType = unpack(p, 'sampleType')
+              unique_sampleType = sampleType.filter(unique)
+              with_validate = unique_sampleType.length > 2
+              unique_validates = delete_element_from_array(delete_element_from_array(delete_element_from_array(unique_sampleType, "qc"), "sample"), "")
+              sample_label = unpack(p, 'label')
 
-                      var pca_raw = JSON.parse(data.Item.pca_raw.S)
-                      var pca_raw_var_exp = JSON.parse(data.Item.pca_raw_var_exp.S)
-                      var pca_normalized = JSON.parse(data.Item["pca_" + normalization_method].S)
-                      var pca_normalized_var_exp = JSON.parse(data.Item["pca_" + normalization_method + "_var_exp"].S)
-
-                      var unique_sampleType = p.sampleType.filter(unique)
-                      var with_validate = unique_sampleType.length > 2
-                      var unique_validates = delete_element_from_array(delete_element_from_array(unique_sampleType, "qc"), "sample")
-
-                      var raw_score_plot_dta = score_plot(pca_raw.PC1, pca_raw.PC2, pca_raw_var_exp[0], pca_raw_var_exp[1], null, p.sampleType, Array(p.sampleType.length).fill(""), ["red", "rgba(255, 255, 255, 0.1)"].concat(color_sequence.slice(0, unique_sampleType.length - 2)), ["circle"], ["qc", "sample"].concat(unique_validates), [""], p.label, 6, !1, !1, !1, [0.1, 0.1, 0.1])
-                      raw_score_plot_dta.layout.title = "Raw Data"
-
-                      Plotly.newPlot("serda_pca_raw", raw_score_plot_dta.data, raw_score_plot_dta.layout).then(function (db) {
-                        Plotly.toImage(db, {
-                          format: "svg"
-                        }).then(function (url) {
-                          uuu = url, uuu = uuu.replace(/^data:image\/svg\+xml,/, ""), uuu = decodeURIComponent(uuu), after_score_plot = btoa(unescape(encodeURIComponent(uuu)))
-                        })
-                      })
-
-
-                      var serda_score_plot_dta = score_plot(pca_normalized.PC1, pca_normalized.PC2, pca_normalized_var_exp[0], pca_normalized_var_exp[1], null, p.sampleType, Array(p.sampleType.length).fill(""), ["red", "rgba(255, 255, 255, 0.1)"].concat(color_sequence.slice(0, unique_sampleType.length - 2)), ["circle"], ["qc", "sample"].concat(unique_validates), [""], p.label, 6, !1, !1, !1, [0.1, 0.1, 0.1])
-                      serda_score_plot_dta.layout.title = "SERDA Normalized Data"
-
-
-                      Plotly.newPlot("serda_pca_normalized", serda_score_plot_dta.data, serda_score_plot_dta.layout).then(function (db) {
-                        Plotly.toImage(db, {
-                          format: "svg"
-                        }).then(function (url) {
-                          uuu = url, uuu = uuu.replace(/^data:image\/svg\+xml,/, ""), uuu = decodeURIComponent(uuu), after_score_plot = btoa(unescape(encodeURIComponent(uuu)))
-                        })
-                      })
-
-                      // After PCA show how the QCs before/after.
-
-                      var RSD_result_summary = JSON.parse(data.Item.RSD_result_summary.S)
-                      var RSD_table = JSON.parse(data.Item.RSD_table.S)
+              has_qc = sampleType.includes('qc')
+              has_validate = unique_validates.length > 0
 
 
 
-                      $("#serda_rsdraw").text(RSD_result_summary.median_QC_raw_RSD)
-                      $("#serda_count_less_20_raw").text(RSD_result_summary.count_QC_raw_RSD)
-                      $("#serda_perc_less_20_raw").text(RSD_result_summary.perc_QC_raw_RSD)
+              var pca_raw_score = { PC1: pca_raw.scores.map(x => x[0]), PC2: pca_raw.scores.map(x => x[1]) }
+              var pca_raw_var_exp = pca_raw.var_exp
 
-                      $("#serda_rsdnormalized").text(RSD_result_summary.median_QC_normalized_RSD)
-                      $("#serda_count_less_20_normalized").text(RSD_result_summary.count_QC_normalized_RSD)
-                      $("#serda_perc_less_20_normalized").text(RSD_result_summary.perc_QC_normalized_RSD)
+              var raw_score_plot_dta = score_plot(pca_raw_score.PC1, pca_raw_score.PC2, pca_raw_var_exp[0], pca_raw_var_exp[1], null, sampleType, Array(sampleType.length).fill(""), ["red", "rgba(255, 255, 255, 0.1)"].concat(color_sequence.slice(0, unique_sampleType.length - 2)), ["circle"], ["qc", "sample"].concat(unique_validates), [""], sample_label, 6, !1, !1, !1, [0.1, 0.1, 0.1])
+              raw_score_plot_dta.layout.title = "Raw Data"
 
-                      if (with_validate) {
-                        $(".with_validate").show()
-                        for (i = 0; i < unique_validates.length; i++) {
-                          if (i === 0) {
-                            var serda_rsdvalidateraw_text = RSD_result_summary["median_" + unique_validates[i] + "_raw_RSD"]
-                            var serda_count_less_20_validate_raw_text = RSD_result_summary["count_" + unique_validates[i] + "_raw_RSD"]
-                            var serda_perc_less_20_validate_raw_text = RSD_result_summary["perc_" + unique_validates[i] + "_raw_RSD"]
+              $("#raw_status").text("Finished.")
+              var des = "<p>Principal Component Analysis score plot of the raw dataset.</p>"
+              if (has_qc) {
+                des = des + "<p>QC RSD: " + raw_info.raw_qc_RSD[0] + ".</p>"
+              }
+              if (has_validate) {
+                for (var i = 0; i < unique_validates.length; i++) {
+                  des = des + "<p>" + unique_validates[i] + " RSD: " + raw_info['raw_' + unique_validates[i] + "_RSD"][0] + ".</p>"
+                }
+              }
 
-                            var serda_rsdvalidatenormalized_text = RSD_result_summary["median_" + unique_validates[i] + "_normalized_RSD"]
-                            var serda_count_less_20_validate_normalized_text = RSD_result_summary["count_" + unique_validates[i] + "_normalized_RSD"]
-                            var serda_perc_less_20_validate_normalized_text = RSD_result_summary["perc_" + unique_validates[i] + "_normalized_RSD"]
-
-                          } else {
-                            serda_rsdvalidateraw_text = serda_rsdvalidateraw_text + ", " + RSD_result_summary["median_" + unique_validates[i] + "_raw_RSD"]
-                            serda_count_less_20_validate_raw_text = serda_count_less_20_validate_raw_text + ", " + RSD_result_summary["median_" + unique_validates[i] + "_raw_RSD"]
-                            serda_perc_less_20_validate_raw_text = serda_perc_less_20_validate_raw_text + ", " + RSD_result_summary["perc_" + unique_validates[i] + "_raw_RSD"]
-                            
-                            serda_rsdvalidatenormalized_text = serda_rsdvalidatenormalized_text + ", " + RSD_result_summary["median_" + unique_validates[i] + "_normalized_RSD"]
-                            serda_count_less_20_validate_normalized_text = serda_count_less_20_validate_normalized_text + ", " + RSD_result_summary["median_" + unique_validates[i] + "_normalized_RSD"]
-                            serda_perc_less_20_validate_normalized_text = serda_perc_less_20_validate_normalized_text + ", " + RSD_result_summary["perc_" + unique_validates[i] + "_normalized_RSD"]
-                          }
-
-
-                        }
-
-                        $("#serda_rsdvalidateraw").text(serda_rsdvalidateraw_text)
-                        $("#serda_count_less_20_validate_raw").text(serda_count_less_20_validate_raw_text)
-                        $("#serda_perc_less_20_validate_raw").text(serda_perc_less_20_validate_raw_text)
-                        $(".unique_validates").text(unique_validates.join(", "))
-
-
-                        $("#serda_rsdvalidatenormalized").text(serda_rsdvalidatenormalized_text)
-                        $("#serda_count_less_20_validate_normalized").text(serda_count_less_20_validate_normalized_text)
-                        $("#serda_perc_less_20_validate_normalized").text(serda_perc_less_20_validate_normalized_text)
-
-
-
-
-
-                      }
-
-
-
-
-
-
-
-                    })
-
-
-
-                  } else {
-                    console.log("waiting " + data_id + " " + normalization_method + ".")
-                  }
-                }, 5000)
+              $("#raw_result_description").html(des)
+              Plotly.newPlot("raw_pca_plot", raw_score_plot_dta.data, raw_score_plot_dta.layout).then(function (db) {
+                Plotly.toImage(db, {
+                  format: "svg"
+                }).then(function (url) {
+                  pca_plot_url.raw_pca_plot = btoa(unescape(encodeURIComponent(decodeURIComponent(url.replace(/^data:image\/svg\+xml,/, "")))))
+                })
               })
+
+              // now start looking for result.
+              record_id = []
+              normalized_datasets_bin_id_matching = {}
+
+
+              window.onbeforeunload = function () {
+                return 'Are you really want to perform the action?';
+              }
+
+
+
+              loop = function () {
+                let req = new XMLHttpRequest();
+                req.onreadystatechange = function () {
+                  if (this.readyState == 4 && this.status == 200) {
+                    result_from_new_collection = JSON.parse(this.responseText)
+                    collection_bin_id = unpack(result_from_new_collection.records, 'id')
+                    new_record_ids = collection_bin_id.filter(function (el) {
+                      return record_id.indexOf(el) < 0;
+                    });
+                    if (new_record_ids.length > 0) { // this means that there is a new method finished.
+                      // now since at least a new method is finished. Extract those results one by one.
+
+                      // now we have the new_record. Use R to read them and return the value so thtat JavaScript can update the user. Then, a new loop checking new record will start in JavaScript
+                      // new_record_ids = ["5f1093e7c58dc34bf5d4a73b", "5f109369918061662842d96a", "5f10929bc1edc466175840f7"]
+                      console.log("new record found!")
+                      console.log(new_record_ids)
+
+                      ocpu.call("get_new_bin", {
+                        new_record_ids: new_record_ids
+                      }, function (session) {
+                        s3 = session
+                        session.getObject(function (obj) {
+                          ooo = obj
+                          obj.forEach(function (e, index, array) {
+                            console.log(index)
+                            if (e.faied !== undefined) { // error occured.
+                              console.log(e.method[0] + "failed.")
+                              $("#" + e.method[0] + "_status").text("Error: " + e.message[0] + ". Feel free to contact slfan at ucdavis dot edu for help.")
+                              record_id.push(new_record_ids[index]);
+                            } else {
+                              if (e.status !== undefined) { // update the status.
+                                //console.log("!")
+                                //$("#status").text(e.status[0])
+                              } else {
+                                console.log(e.method[0])
+
+
+                                if (e.RSDs_df !== undefined) {
+                                  RSDs_df = e.RSDs_df
+                                }
+
+                                normalized_datasets_bin_id_matching[e.method[0]] = e.new_bin_id_matching
+
+                                console.log("working on new record " + e.method[0])
+                                var pca_normalized = { PC1: e.pca.scores.map(x => x[0]), PC2: e.pca.scores.map(x => x[1]) }
+                                var pca_normalized_var_exp = e.pca.var_exp
+
+                                var normalized_score_plot_dta = score_plot(pca_normalized.PC1, pca_normalized.PC2, pca_normalized_var_exp[0], pca_normalized_var_exp[1], null, sampleType, Array(sampleType.length).fill(""), ["red", "rgba(255, 255, 255, 0.1)"].concat(color_sequence.slice(0, unique_sampleType.length - 2)), ["circle"], ["qc", "sample"].concat(unique_validates), [""], sample_label, 6, !1, !1, !1, [0.1, 0.1, 0.1])
+                                normalized_score_plot_dta.layout.title = e.method[0] + " Normalized Data"
+
+                                $("#" + e.method[0] + "_status").text("Finished.")
+                                var des = "<p>Principal Component Analysis score plot of the " + e.method[0] + " dataset.</p>"
+                                if (has_qc) {
+                                  des = des + "<p>QC RSD: " + e[e.method[0] + '_qc_RSD'][0] + ".</p>"
+                                }
+                                if (has_validate) {
+                                  for (var i = 0; i < unique_validates.length; i++) {
+                                    des = des + "<p>" + unique_validates[i] + " RSD: " + e[e.method[0] + '_' + unique_validates[i] + "_RSD"][0] + ".</p>"
+                                  }
+                                }
+
+                                $("#" + e.method[0] + "_result_description").html(des)
+
+                                Plotly.newPlot(e.method[0] + "_pca_plot", normalized_score_plot_dta.data, normalized_score_plot_dta.layout).then(function (db) {
+                                  Plotly.toImage(db, {
+                                    format: "svg"
+                                  }).then(function (url) {
+                                    pca_plot_url[e.method[0] + '_pca_plot'] = btoa(unescape(encodeURIComponent(decodeURIComponent(url.replace(/^data:image\/svg\+xml,/, "")))))
+                                  })
+                                })
+
+
+                                record_id.push(new_record_ids[index]);
+                              }
+                            }
+
+
+
+                            if (index === array.length - 1) {
+                              if (record_id.length == normalization_method.length - 1) {
+                                // it means all josb has been finished. Kill the loop.
+                                // call R to download the results.
+                                ocpu.call("download_results", {
+                                  normalized_datasets_bin_id_matching: normalized_datasets_bin_id_matching,
+                                  RSDs_df: RSDs_df,
+                                  sample_label: sample_label
+                                }, function (session) {
+                                  s4 = session
+
+                                  session.getObject(function (obj) {
+                                    oo = obj
+                                    if (obj.status[0]) {
+
+                                      var allResults = [];
+                                      for (var i = 0; i < obj.filenames.length; i++) {
+
+                                        Papa.parse(session.loc + "files/" + obj.filenames[i], {
+                                          download: true,
+                                          header: true,
+                                          skipEmptyLines: true,
+                                          error: function (err, file, inputElem, reason) { /* handle*/ },
+                                          complete: function (results) {
+                                            allResults.push(results.data);
+                                            if (allResults.length == obj.filenames.length) {
+                                              // Do whatever you need to do
+
+                                              aaa = allResults
+                                              $("#download_results").click(function () {
+                                                $("#download_results").text("Downloading...")
+                                                $("#download_results").prop('disabled', true);
+                                                var zip = new JSZip
+                                                for (var c = 0; c < Object.keys(pca_plot_url).length; c++) {
+                                                  zip.file(Object.keys(pca_plot_url)[c] + ".svg", Object.values(pca_plot_url)[c], {
+                                                    base64: !0
+                                                  });
+                                                }
+                                                for (var j = 0; j < allResults.length; j++) {
+
+                                                  zip.file(obj.filenames[j], Papa.unparse(allResults[j]));
+                                                }
+
+                                                zip.generateAsync({
+                                                  type: "blob"
+                                                }).then(function (l) {
+                                                  var m = new Date;
+                                                  saveAs(l, "Normalization Results - " + m.getTime() + ".zip")
+                                                  $("#download_results").text("Download Results")
+                                                  $("#download_results").prop('disabled', false);
+                                                })
+
+                                              })
+                                            }
+                                          }
+                                        });
+                                      }
+                                    }
+
+
+
+
+
+                                    console.log("Job Finished!")
+                                    //$("#download_results_panel").show()
+                                    $("#waiting_result_text").text("Congratulations! The normalization task is finished and all the results are ready for download.")
+                                    $(".disable_in_progress").attr("disabled", false);
+                                    $("#status").text("")
+                                    $("#submit_job").text("Start Normalization");
+
+
+
+                                  })
+
+                                  console.log(s4)
+
+
+                                })
+
+
+                              } else {
+                                unnormalized_methods.shift();
+                                $("#status").text("Working on " + unnormalized_methods[0] + ".")
+
+                                $("#" + unnormalized_methods[0] + "_status").html('<span class="rainbow">Calculating.</span>' + ' This may take a while. If failed, an error message will pop-up.')
+                                console.log("Another loop started for " + unnormalized_methods[0])
+
+
+
+
+                                sleep(5000).then(() => { loop(); });
+                                console.log("!")
+
+                              }
+                            }
+                          })
+
+                        })
+                      })
+
+                    } else {
+                      // keep looping to check new thing.
+                      console.log("keep looping to check new thing..")
+
+
+                      sleep(5000).then(() => { loop(); });
+                      console.log("!")
+                    }
+                  } else {
+                    if (this.status === 500) {
+                      ttt = this
+                      console.log(this)
+                      loop();
+                    }
+                  }
+                };
+                req.open("GET", "https://api.jsonbin.io/e/collection/" + new_collection_id + "/all-bins", true);
+                req.onerror = function () {
+                  console.log("** An error occurred during the transaction");
+                };
+                req.setRequestHeader("secret-key", "$2b$10$5bk8vcqs/lgNmnBLLGmSauJJfQkfmgBkqnerEd0EaD6xiCf0BLh8u");
+
+                req.send();
+              }
+              loop()
+
+
 
             } else {
               alert("Error")
@@ -617,9 +658,9 @@
 
   <script src="https://smtpjs.com/v3/smtp.js"></script>
   <!--OpenCPU-->
-  <!-- <script src="opencpu-0.5-local.js"></script> -->
+  <script src="opencpu-0.5-local.js"></script>
 
-  <script src="//cdn.opencpu.org/opencpu-0.4.js"></script>
+  <!-- <script src="//cdn.opencpu.org/opencpu-0.4.js"></script> -->
 
   <script src="https://sdk.amazonaws.com/js/aws-sdk-2.7.16.min.js"></script>
 
