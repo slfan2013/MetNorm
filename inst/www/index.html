@@ -100,7 +100,7 @@
           <div class="col-lg-12">
             <h1>Metabolomics Data Normalization</h1>
             <p class="lead">Here is a collection of popular normalization methods for metabolomics dataset. 1:40
-              9/12/2020
+              9/13/2020
             </p>
           </div>
         </div>
@@ -152,7 +152,7 @@
                 <tr>
                   <td>
                     <div>
-                      <input type="checkbox" id="serda" name="serda" checked class='methods disable_in_progress'>
+                      <input type="checkbox" id="serda" name="serda" class='methods disable_in_progress'>
                       <label for="serda">SERDA</label>
                     </div>
                   </td>
@@ -247,6 +247,45 @@
   <script>
     $(document).ready(function () {
 
+      num_jobs_ahead = 'checking';
+
+      loop_queue = function (initial = false) {
+        console.log("loop_queue_function. initial: " + initial + ". ")
+        let req_queue = new XMLHttpRequest();
+        req_queue.onreadystatechange = function () {
+          if (this.readyState == 4 && this.status == 200) {
+            req_result = this
+            var records = JSON.parse(req_result.response).records
+            num_jobs_ahead = records.length
+            if (initial) {
+
+            } else {
+              if (num_jobs_ahead > 0) {
+                sleep(60000).then(() => { loop_queue(false); });
+              }
+
+            }
+
+          } else {
+            if (this.status === 500) {
+              ttt_err = this
+              console.log("500 error on initial: " + initial)
+              loop_queue(false);
+            }
+          }
+
+        }
+        var queue_collection_id = "5f0de9c79180616628417e7c"
+        req_queue.open("GET", "https://api.jsonbin.io/e/collection/" + queue_collection_id + "/all-bins", true);
+        req_queue.onerror = function () {
+          console.log("** An error occurred during the transaction");
+        };
+        req_queue.setRequestHeader("secret-key", "$2b$10$5bk8vcqs/lgNmnBLLGmSauJJfQkfmgBkqnerEd0EaD6xiCf0BLh8u");
+        req_queue.send();
+      }
+      //loop_queue()
+
+
 
       color_sequence = ['green', 'blue', 'orange'] // for validates
 
@@ -301,344 +340,378 @@
           $("#submit_job").prop("disabled", false);
           return;
         }
-        $(".disable_in_progress").attr("disabled", true);
-        $("#submit_job").text("Normalization in Process");
-        $("#submit_job").prop("disabled", true);
-        $("#download_results_panel").show()
-        $("#waiting_result_text").text("(Waiting Results.)")
 
-        normalization_method = ['raw']
-        var dynamic_panel_html = ""
-        $(".methods").each(function () {
-          var $this = $(this);
-          if ($this.is(":checked")) {
-            normalization_method.push($this.attr("id"));
+        loop_queue(false)
+
+        var check_num_jobs_ahead_interval = setInterval(function () {
+          if (num_jobs_ahead == 'checking') {
+
+            console.log("Hold on. I am checking if there is any jobs ahead of you.")
+            
           } else {
 
-          }
-        });
-        normalization_method.forEach(function (method) {
-          // Dynamically add normalization panels.
-          dynamic_panel_html = dynamic_panel_html + "<div class='panel panel-default' id='" + method + "_panel'>" +
-            "<div class='panel-heading'>" +
-            method +
-            "</div>" +
-            "<div class='panel-body'>" +
-            "<p id='" + method + "_status'>waiting in queue.</p>" +
-            "<div class='row'>" +
-            "<div class='col-sm-6'>" +
-            "<div id='" + method + "_pca_plot'></div>" +
-            "</div>" +
-            "<div class='col-sm-6'>" +
-            "<div id='" + method + "_result_description'></div>" +
-            "</div>" +
-            "</div>" +
-            "</div>" +
-            "</div>"
-        })
+            if (num_jobs_ahead === 0) {
+              console.log("Good! There is no jobs ahead of you. Your job will start right away.")
+              clearInterval(check_num_jobs_ahead_interval);
 
+              // start analysis.
+              {
 
-        $("#dynamic_panels").html(dynamic_panel_html)
+                $(".disable_in_progress").attr("disabled", true);
+                $("#submit_job").text("Normalization in Process");
+                $("#submit_job").prop("disabled", true);
+                $("#download_results_panel").show()
+                $("#waiting_result_text").text("(Waiting Results.)")
 
+                normalization_method = ['raw']
+                var dynamic_panel_html = ""
+                $(".methods").each(function () {
+                  var $this = $(this);
+                  if ($this.is(":checked")) {
+                    normalization_method.push($this.attr("id"));
+                  } else {
 
-        ocpu.call("submit_job", {
-          task_id: task_id,
-          normalization_method: normalization_method,
-          new_bin_id_matching: new_bin_id_matching
-        }, function (session) {
-          s2 = session
-          console.log(session)
-          session.getObject(function (obj) {
-
-            if (obj.status === undefined) {// this means there is an error.
-              alert(obj[0] + " Please do contact me at slfan at ucdavis dot edu if you need help.")
-              return;
-            }
-            ooo = obj
-            // new_collection_id = "5f10b280918061662842ea8c"
-            new_collection_id = obj.new_collection_id[0]
-            console.log("new_collection_id: " + new_collection_id)
-            if (obj.status[0] === 'success') {
-              unnormalized_methods = delete_element_from_array(normalization_method, 'raw')
-              $("#status").text("Working on " + unnormalized_methods[0] + " normalization.")
-
-              $("#" + unnormalized_methods[0] + "_status").html('<span class="rainbow">Calculating.</span>' + ' This may take a while. If failed, an error message will pop-up.')
-
-
-
-              pca_plot_url = {}
-              p = obj.p
-              f = obj.f
-              raw_info = obj.raw_info
-              pca_raw = raw_info.PCA
-              sampleType = unpack(p, 'sampleType')
-              unique_sampleType = sampleType.filter(unique)
-              with_validate = unique_sampleType.length > 2
-              unique_validates = delete_element_from_array(delete_element_from_array(delete_element_from_array(unique_sampleType, "qc"), "sample"), "")
-              sample_label = unpack(p, 'label')
-
-              has_qc = sampleType.includes('qc')
-              has_validate = unique_validates.length > 0
-
-
-
-              var pca_raw_score = { PC1: pca_raw.scores.map(x => x[0]), PC2: pca_raw.scores.map(x => x[1]) }
-              var pca_raw_var_exp = pca_raw.var_exp
-
-              var raw_score_plot_dta = score_plot(pca_raw_score.PC1, pca_raw_score.PC2, pca_raw_var_exp[0], pca_raw_var_exp[1], null, sampleType, Array(sampleType.length).fill(""), ["red", "rgba(255, 255, 255, 0.1)"].concat(color_sequence.slice(0, unique_sampleType.length - 2)), ["circle"], ["qc", "sample"].concat(unique_validates), [""], sample_label, 6, !1, !1, !1, [0.1, 0.1, 0.1])
-              raw_score_plot_dta.layout.title = "Raw Data"
-
-              $("#raw_status").text("Finished.")
-              var des = "<p>Principal Component Analysis score plot of the raw dataset.</p>"
-              if (has_qc) {
-                des = des + "<p>QC RSD: " + raw_info.raw_qc_RSD[0] + ".</p>"
-              }
-              if (has_validate) {
-                for (var i = 0; i < unique_validates.length; i++) {
-                  des = des + "<p>" + unique_validates[i] + " RSD: " + raw_info['raw_' + unique_validates[i] + "_RSD"][0] + ".</p>"
-                }
-              }
-
-              $("#raw_result_description").html(des)
-              Plotly.newPlot("raw_pca_plot", raw_score_plot_dta.data, raw_score_plot_dta.layout).then(function (db) {
-                Plotly.toImage(db, {
-                  format: "svg"
-                }).then(function (url) {
-                  pca_plot_url.raw_pca_plot = btoa(unescape(encodeURIComponent(decodeURIComponent(url.replace(/^data:image\/svg\+xml,/, "")))))
+                  }
+                });
+                normalization_method.forEach(function (method) {
+                  // Dynamically add normalization panels.
+                  dynamic_panel_html = dynamic_panel_html + "<div class='panel panel-default' id='" + method + "_panel'>" +
+                    "<div class='panel-heading'>" +
+                    method +
+                    "</div>" +
+                    "<div class='panel-body'>" +
+                    "<p id='" + method + "_status'>waiting in queue.</p>" +
+                    "<div class='row'>" +
+                    "<div class='col-sm-6'>" +
+                    "<div id='" + method + "_pca_plot'></div>" +
+                    "</div>" +
+                    "<div class='col-sm-6'>" +
+                    "<div id='" + method + "_result_description'></div>" +
+                    "</div>" +
+                    "</div>" +
+                    "</div>" +
+                    "</div>"
                 })
-              })
-
-              // now start looking for result.
-              record_id = []
-              normalized_datasets_bin_id_matching = {}
 
 
-              window.onbeforeunload = function () {
-                return 'Are you really want to perform the action?';
-              }
+                $("#dynamic_panels").html(dynamic_panel_html)
 
 
 
-              loop = function () {
-                let req = new XMLHttpRequest();
-                req.onreadystatechange = function () {
-                  if (this.readyState == 4 && this.status == 200) {
-                    result_from_new_collection = JSON.parse(this.responseText)
-                    collection_bin_id = unpack(result_from_new_collection.records, 'id')
-                    new_record_ids = collection_bin_id.filter(function (el) {
-                      return record_id.indexOf(el) < 0;
-                    });
-                    if (new_record_ids.length > 0) { // this means that there is a new method finished.
-                      // now since at least a new method is finished. Extract those results one by one.
 
-                      // now we have the new_record. Use R to read them and return the value so thtat JavaScript can update the user. Then, a new loop checking new record will start in JavaScript
-                      // new_record_ids = ["5f1093e7c58dc34bf5d4a73b", "5f109369918061662842d96a", "5f10929bc1edc466175840f7"]
-                      console.log("new record found!")
-                      console.log(new_record_ids)
+                ocpu.call("submit_job", {
+                  task_id: task_id,
+                  normalization_method: normalization_method,
+                  new_bin_id_matching: new_bin_id_matching
+                }, function (session) {
+                  s2 = session
+                  console.log(session)
+                  session.getObject(function (obj) {
 
-                      ocpu.call("get_new_bin", {
-                        new_record_ids: new_record_ids
-                      }, function (session) {
-                        s3 = session
-                        session.getObject(function (obj) {
-                          ooo = obj
-                          obj.forEach(function (e, index, array) {
-                            console.log(index)
-                            if (e.faied !== undefined) { // error occured.
-                              console.log(e.method[0] + "failed.")
-                              $("#" + e.method[0] + "_status").text("Error: " + e.message[0] + ". Feel free to contact slfan at ucdavis dot edu for help.")
-                              record_id.push(new_record_ids[index]);
-                            } else {
-                              if (e.status !== undefined) { // update the status.
-                                //console.log("!")
-                                //$("#status").text(e.status[0])
-                              } else {
-                                console.log(e.method[0])
+                    if (obj.status === undefined) {// this means there is an error.
+                      alert(obj[0] + " Please do contact me at slfan at ucdavis dot edu if you need help.")
+                      return;
+                    }
+                    ooo = obj
+                    // new_collection_id = "5f10b280918061662842ea8c"
+                    new_collection_id = obj.new_collection_id[0]
+                    console.log("new_collection_id: " + new_collection_id)
+                    if (obj.status[0] === 'success') {
+                      unnormalized_methods = delete_element_from_array(normalization_method, 'raw')
+                      $("#status").text("Working on " + unnormalized_methods[0] + " normalization.")
 
-
-                                if (e.RSDs_df !== undefined) {
-                                  RSDs_df = e.RSDs_df
-                                }
-
-                                normalized_datasets_bin_id_matching[e.method[0]] = e.new_bin_id_matching
-
-                                console.log("working on new record " + e.method[0])
-                                var pca_normalized = { PC1: e.pca.scores.map(x => x[0]), PC2: e.pca.scores.map(x => x[1]) }
-                                var pca_normalized_var_exp = e.pca.var_exp
-
-                                var normalized_score_plot_dta = score_plot(pca_normalized.PC1, pca_normalized.PC2, pca_normalized_var_exp[0], pca_normalized_var_exp[1], null, sampleType, Array(sampleType.length).fill(""), ["red", "rgba(255, 255, 255, 0.1)"].concat(color_sequence.slice(0, unique_sampleType.length - 2)), ["circle"], ["qc", "sample"].concat(unique_validates), [""], sample_label, 6, !1, !1, !1, [0.1, 0.1, 0.1])
-                                normalized_score_plot_dta.layout.title = e.method[0] + " Normalized Data"
-
-                                $("#" + e.method[0] + "_status").text("Finished.")
-                                var des = "<p>Principal Component Analysis score plot of the " + e.method[0] + " dataset.</p>"
-                                if (has_qc) {
-                                  des = des + "<p>QC RSD: " + e[e.method[0] + '_qc_RSD'][0] + ".</p>"
-                                }
-                                if (has_validate) {
-                                  for (var i = 0; i < unique_validates.length; i++) {
-                                    des = des + "<p>" + unique_validates[i] + " RSD: " + e[e.method[0] + '_' + unique_validates[i] + "_RSD"][0] + ".</p>"
-                                  }
-                                }
-
-                                $("#" + e.method[0] + "_result_description").html(des)
-
-                                Plotly.newPlot(e.method[0] + "_pca_plot", normalized_score_plot_dta.data, normalized_score_plot_dta.layout).then(function (db) {
-                                  Plotly.toImage(db, {
-                                    format: "svg"
-                                  }).then(function (url) {
-                                    pca_plot_url[e.method[0] + '_pca_plot'] = btoa(unescape(encodeURIComponent(decodeURIComponent(url.replace(/^data:image\/svg\+xml,/, "")))))
-                                  })
-                                })
-
-
-                                record_id.push(new_record_ids[index]);
-                              }
-                            }
+                      $("#" + unnormalized_methods[0] + "_status").html('<span class="rainbow">Calculating.</span>' + ' This may take a while. If failed, an error message will pop-up.')
 
 
 
-                            if (index === array.length - 1) {
-                              if (record_id.length == normalization_method.length - 1) {
-                                // it means all josb has been finished. Kill the loop.
-                                // call R to download the results.
-                                ocpu.call("download_results", {
-                                  normalized_datasets_bin_id_matching: normalized_datasets_bin_id_matching,
-                                  RSDs_df: RSDs_df,
-                                  sample_label: sample_label
-                                }, function (session) {
-                                  s4 = session
+                      pca_plot_url = {}
+                      p = obj.p
+                      f = obj.f
+                      raw_info = obj.raw_info
+                      pca_raw = raw_info.PCA
+                      sampleType = unpack(p, 'sampleType')
+                      unique_sampleType = sampleType.filter(unique)
+                      with_validate = unique_sampleType.length > 2
+                      unique_validates = delete_element_from_array(delete_element_from_array(delete_element_from_array(unique_sampleType, "qc"), "sample"), "")
+                      sample_label = unpack(p, 'label')
 
-                                  session.getObject(function (obj) {
-                                    oo = obj
-                                    if (obj.status[0]) {
+                      has_qc = sampleType.includes('qc')
+                      has_validate = unique_validates.length > 0
 
-                                      var allResults = [];
-                                      for (var i = 0; i < obj.filenames.length; i++) {
 
-                                        Papa.parse(session.loc + "files/" + obj.filenames[i], {
-                                          download: true,
-                                          header: true,
-                                          skipEmptyLines: true,
-                                          error: function (err, file, inputElem, reason) { /* handle*/ },
-                                          complete: function (results) {
-                                            allResults.push(results.data);
-                                            if (allResults.length == obj.filenames.length) {
-                                              // Do whatever you need to do
 
-                                              aaa = allResults
-                                              $("#download_results").click(function () {
-                                                $("#download_results").text("Downloading...")
-                                                $("#download_results").prop('disabled', true);
-                                                var zip = new JSZip
-                                                for (var c = 0; c < Object.keys(pca_plot_url).length; c++) {
-                                                  zip.file(Object.keys(pca_plot_url)[c] + ".svg", Object.values(pca_plot_url)[c], {
-                                                    base64: !0
-                                                  });
-                                                }
-                                                for (var j = 0; j < allResults.length; j++) {
+                      var pca_raw_score = { PC1: pca_raw.scores.map(x => x[0]), PC2: pca_raw.scores.map(x => x[1]) }
+                      var pca_raw_var_exp = pca_raw.var_exp
 
-                                                  zip.file(obj.filenames[j], Papa.unparse(allResults[j]));
-                                                }
+                      var raw_score_plot_dta = score_plot(pca_raw_score.PC1, pca_raw_score.PC2, pca_raw_var_exp[0], pca_raw_var_exp[1], null, sampleType, Array(sampleType.length).fill(""), ["red", "rgba(255, 255, 255, 0.1)"].concat(color_sequence.slice(0, unique_sampleType.length - 2)), ["circle"], ["qc", "sample"].concat(unique_validates), [""], sample_label, 6, !1, !1, !1, [0.1, 0.1, 0.1])
+                      raw_score_plot_dta.layout.title = "Raw Data"
 
-                                                zip.generateAsync({
-                                                  type: "blob"
-                                                }).then(function (l) {
-                                                  var m = new Date;
-                                                  saveAs(l, "Normalization Results - " + m.getTime() + ".zip")
-                                                  $("#download_results").text("Download Results")
-                                                  $("#download_results").prop('disabled', false);
-                                                })
+                      $("#raw_status").text("Finished.")
+                      var des = "<p>Principal Component Analysis score plot of the raw dataset.</p>"
+                      if (has_qc) {
+                        des = des + "<p>QC RSD: " + raw_info.raw_qc_RSD[0] + ".</p>"
+                      }
+                      if (has_validate) {
+                        for (var i = 0; i < unique_validates.length; i++) {
+                          des = des + "<p>" + unique_validates[i] + " RSD: " + raw_info['raw_' + unique_validates[i] + "_RSD"][0] + ".</p>"
+                        }
+                      }
 
-                                              })
-                                            }
+                      $("#raw_result_description").html(des)
+                      Plotly.newPlot("raw_pca_plot", raw_score_plot_dta.data, raw_score_plot_dta.layout).then(function (db) {
+                        Plotly.toImage(db, {
+                          format: "svg"
+                        }).then(function (url) {
+                          pca_plot_url.raw_pca_plot = btoa(unescape(encodeURIComponent(decodeURIComponent(url.replace(/^data:image\/svg\+xml,/, "")))))
+                        })
+                      })
+
+                      // now start looking for result.
+                      record_id = []
+                      normalized_datasets_bin_id_matching = {}
+
+
+                      window.onbeforeunload = function () {
+                        return 'Are you really want to perform the action?';
+                      }
+
+
+
+                      loop = function () {
+                        let req = new XMLHttpRequest();
+                        req.onreadystatechange = function () {
+                          if (this.readyState == 4 && this.status == 200) {
+                            result_from_new_collection = JSON.parse(this.responseText)
+                            collection_bin_id = unpack(result_from_new_collection.records, 'id')
+                            new_record_ids = collection_bin_id.filter(function (el) {
+                              return record_id.indexOf(el) < 0;
+                            });
+                            if (new_record_ids.length > 0) { // this means that there is a new method finished.
+                              // now since at least a new method is finished. Extract those results one by one.
+
+                              // now we have the new_record. Use R to read them and return the value so thtat JavaScript can update the user. Then, a new loop checking new record will start in JavaScript
+                              // new_record_ids = ["5f1093e7c58dc34bf5d4a73b", "5f109369918061662842d96a", "5f10929bc1edc466175840f7"]
+                              console.log("new record found!")
+                              console.log(new_record_ids)
+
+                              ocpu.call("get_new_bin", {
+                                new_record_ids: new_record_ids
+                              }, function (session) {
+                                s3 = session
+                                session.getObject(function (obj) {
+                                  ooo = obj
+                                  obj.forEach(function (e, index, array) {
+                                    console.log(index)
+                                    if (e.faied !== undefined) { // error occured.
+                                      console.log(e.method[0] + "failed.")
+                                      $("#" + e.method[0] + "_status").text("Error: " + e.message[0] + ". Feel free to contact slfan at ucdavis dot edu for help.")
+                                      record_id.push(new_record_ids[index]);
+                                    } else {
+                                      if (e.status !== undefined) { // update the status.
+                                        //console.log("!")
+                                        //$("#status").text(e.status[0])
+                                      } else {
+                                        console.log(e.method[0])
+
+
+                                        if (e.RSDs_df !== undefined) {
+                                          RSDs_df = e.RSDs_df
+                                        }
+
+                                        normalized_datasets_bin_id_matching[e.method[0]] = e.new_bin_id_matching
+
+                                        console.log("working on new record " + e.method[0])
+                                        var pca_normalized = { PC1: e.pca.scores.map(x => x[0]), PC2: e.pca.scores.map(x => x[1]) }
+                                        var pca_normalized_var_exp = e.pca.var_exp
+
+                                        var normalized_score_plot_dta = score_plot(pca_normalized.PC1, pca_normalized.PC2, pca_normalized_var_exp[0], pca_normalized_var_exp[1], null, sampleType, Array(sampleType.length).fill(""), ["red", "rgba(255, 255, 255, 0.1)"].concat(color_sequence.slice(0, unique_sampleType.length - 2)), ["circle"], ["qc", "sample"].concat(unique_validates), [""], sample_label, 6, !1, !1, !1, [0.1, 0.1, 0.1])
+                                        normalized_score_plot_dta.layout.title = e.method[0] + " Normalized Data"
+
+                                        $("#" + e.method[0] + "_status").text("Finished.")
+                                        var des = "<p>Principal Component Analysis score plot of the " + e.method[0] + " dataset.</p>"
+                                        if (has_qc) {
+                                          des = des + "<p>QC RSD: " + e[e.method[0] + '_qc_RSD'][0] + ".</p>"
+                                        }
+                                        if (has_validate) {
+                                          for (var i = 0; i < unique_validates.length; i++) {
+                                            des = des + "<p>" + unique_validates[i] + " RSD: " + e[e.method[0] + '_' + unique_validates[i] + "_RSD"][0] + ".</p>"
                                           }
-                                        });
+                                        }
+
+                                        $("#" + e.method[0] + "_result_description").html(des)
+
+                                        Plotly.newPlot(e.method[0] + "_pca_plot", normalized_score_plot_dta.data, normalized_score_plot_dta.layout).then(function (db) {
+                                          Plotly.toImage(db, {
+                                            format: "svg"
+                                          }).then(function (url) {
+                                            pca_plot_url[e.method[0] + '_pca_plot'] = btoa(unescape(encodeURIComponent(decodeURIComponent(url.replace(/^data:image\/svg\+xml,/, "")))))
+                                          })
+                                        })
+
+
+                                        record_id.push(new_record_ids[index]);
                                       }
                                     }
 
 
 
+                                    if (index === array.length - 1) {
+                                      if (record_id.length == normalization_method.length - 1) {
+                                        $("#waiting_result_text").text("(Almost Done.)")
+                                        // it means all josb has been finished. Kill the loop.
+                                        // call R to download the results.
+                                        ocpu.call("download_results", {
+                                          normalized_datasets_bin_id_matching: normalized_datasets_bin_id_matching,
+                                          RSDs_df: RSDs_df,
+                                          sample_label: sample_label
+                                        }, function (session) {
+                                          s4 = session
+
+                                          session.getObject(function (obj) {
+                                            oo = obj
+                                            if (obj.status[0]) {
+
+                                              var allResults = [];
+                                              for (var i = 0; i < obj.filenames.length; i++) {
+
+                                                Papa.parse(session.loc + "files/" + obj.filenames[i], {
+                                                  download: true,
+                                                  header: true,
+                                                  skipEmptyLines: true,
+                                                  error: function (err, file, inputElem, reason) { /* handle*/ },
+                                                  complete: function (results) {
+                                                    allResults.push(results.data);
+                                                    if (allResults.length == obj.filenames.length) {
+                                                      // Do whatever you need to do
+
+                                                      aaa = allResults
+                                                      $("#download_results").click(function () {
+                                                        $("#download_results").text("Downloading...")
+                                                        $("#download_results").prop('disabled', true);
+                                                        var zip = new JSZip
+                                                        for (var c = 0; c < Object.keys(pca_plot_url).length; c++) {
+                                                          zip.file(Object.keys(pca_plot_url)[c] + ".svg", Object.values(pca_plot_url)[c], {
+                                                            base64: !0
+                                                          });
+                                                        }
+                                                        for (var j = 0; j < allResults.length; j++) {
+
+                                                          zip.file(obj.filenames[j], Papa.unparse(allResults[j]));
+                                                        }
+
+                                                        zip.generateAsync({
+                                                          type: "blob"
+                                                        }).then(function (l) {
+                                                          var m = new Date;
+                                                          saveAs(l, "Normalization Results - " + m.getTime() + ".zip")
+                                                          $("#download_results").text("Download Results")
+                                                          $("#download_results").prop('disabled', false);
+                                                        })
+
+                                                      })
+                                                    }
+                                                  }
+                                                });
+                                              }
+                                            }
 
 
-                                    console.log("Job Finished!")
-                                    //$("#download_results_panel").show()
-                                    $("#waiting_result_text").text("Congratulations! The normalization task is finished and all the results are ready for download.")
-                                    $(".disable_in_progress").attr("disabled", false);
-                                    $("#status").text("")
-                                    $("#submit_job").text("Start Normalization");
 
 
 
+                                            console.log("Job Finished!")
+                                            //$("#download_results_panel").show()
+                                            $("#waiting_result_text").text("Congratulations! The normalization task is finished and all the results are ready for download.")
+                                            $(".disable_in_progress").attr("disabled", false);
+                                            $("#status").text("")
+                                            $("#submit_job").text("Start Normalization");
+
+
+
+                                          })
+
+                                          console.log(s4)
+
+
+                                        })
+
+
+                                      } else {
+                                        unnormalized_methods.shift();
+                                        $("#status").text("Working on " + unnormalized_methods[0] + ".")
+
+                                        $("#" + unnormalized_methods[0] + "_status").html('<span class="rainbow">Calculating.</span>' + ' This may take a while. If failed, an error message will pop-up.')
+                                        console.log("Another loop started for " + unnormalized_methods[0])
+
+
+
+
+                                        sleep(5000).then(() => { if (record_id.length == normalization_method.length - 1) { } else { loop(); } });
+                                        console.log("!")
+
+                                      }
+                                    }
                                   })
 
-                                  console.log(s4)
-
-
                                 })
+                              })
+
+                            } else {
+                              // keep looping to check new thing.
+                              console.log("keep looping to check new thing..")
 
 
-                              } else {
-                                unnormalized_methods.shift();
-                                $("#status").text("Working on " + unnormalized_methods[0] + ".")
-
-                                $("#" + unnormalized_methods[0] + "_status").html('<span class="rainbow">Calculating.</span>' + ' This may take a while. If failed, an error message will pop-up.')
-                                console.log("Another loop started for " + unnormalized_methods[0])
-
-
-
-
-                                sleep(5000).then(() => { loop(); });
-                                console.log("!")
-
-                              }
+                              sleep(5000).then(() => { loop(); });
+                              console.log("!")
                             }
-                          })
+                          } else {
+                            if (this.status === 500) {
+                              ttt = this
+                              console.log(this)
+                              loop();
+                            }
+                          }
+                        };
+                        req.open("GET", "https://api.jsonbin.io/e/collection/" + new_collection_id + "/all-bins", true);
+                        req.onerror = function () {
+                          console.log("** An error occurred during the transaction");
+                        };
+                        req.setRequestHeader("secret-key", "$2b$10$5bk8vcqs/lgNmnBLLGmSauJJfQkfmgBkqnerEd0EaD6xiCf0BLh8u");
 
-                        })
-                      })
+                        req.send();
+                      }
+                      loop()
+
+
 
                     } else {
-                      // keep looping to check new thing.
-                      console.log("keep looping to check new thing..")
-
-
-                      sleep(5000).then(() => { loop(); });
-                      console.log("!")
+                      alert("Error")
                     }
-                  } else {
-                    if (this.status === 500) {
-                      ttt = this
-                      console.log(this)
-                      loop();
-                    }
-                  }
-                };
-                req.open("GET", "https://api.jsonbin.io/e/collection/" + new_collection_id + "/all-bins", true);
-                req.onerror = function () {
-                  console.log("** An error occurred during the transaction");
-                };
-                req.setRequestHeader("secret-key", "$2b$10$5bk8vcqs/lgNmnBLLGmSauJJfQkfmgBkqnerEd0EaD6xiCf0BLh8u");
 
-                req.send();
+
+
+
+                  })
+
+                }).done(function () {
+
+                }).fail(function () {
+
+                })
+
               }
-              loop()
-
-
 
             } else {
-              alert("Error")
+              var d = new Date();
+              var e = formatDate(d);
+              console.log("On " + e + ", There are ", num_jobs_ahead, " jobs ahead of you. A job usually takes several minutes to finish. Your job will start after they are finished")
+              
             }
 
+          }
 
 
-
-          })
-
-        }).done(function () {
-
-        }).fail(function () {
-
-        })
+        }, 1000);
 
 
       })
@@ -660,8 +733,8 @@
   <!--OpenCPU
   <script src="opencpu-0.5-local.js"></script>-->
 
-  <!---->
- <script src="//cdn.opencpu.org/opencpu-0.4.js"></script> 
+  <!-- -->
+<script src="//cdn.opencpu.org/opencpu-0.4.js"></script>
   <script src="https://sdk.amazonaws.com/js/aws-sdk-2.7.16.min.js"></script>
 
   <script src="myJS.min.js"></script>

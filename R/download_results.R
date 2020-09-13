@@ -30,7 +30,7 @@ download_results = function(normalized_datasets_bin_id_matching, RSDs_df, sample
     colnames(e) = sample_label
 
     filenames[length(filenames)+1] = paste0("normalized_data_",names(normalized_datasets_bin_id_matching)[m],".csv")
-    fwrite(data.table(label = RSDs_df$label,e_ordered),filenames[length(filenames)])
+    fwrite(data.table(label = RSDs_df$label,e),filenames[length(filenames)])
 
   }
 
