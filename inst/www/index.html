@@ -63,7 +63,7 @@
       <div class="navbar-collapse collapse" id="navbar-main">
         <ul class="nav navbar-nav">
           <li>
-            <a class="navigate" href="#" id='navintro'>Intro</a>
+            <a class="navigate" href="#" id='navintro'>Welcome</a>
           </li>
           <!--<li>
               <a class="navigate" href="#" id='navtutorial'>Tutorial</a>
@@ -98,10 +98,11 @@
 
         <div class="row">
           <div class="col-lg-12">
-            <h1>Metabolomics Data Normalization</h1>
-            <p class="lead">Here is a collection of popular normalization methods for metabolomics dataset. 1:40
-              9/13/2020
+            <h1>SERRF</h1>
+            <p class="lead">Systematic Error Removal using Random Forest.
             </p>
+            <!--<p>Here is a collection of popular normalization methods for metabolomics dataset.
+            </p>-->
           </div>
         </div>
       </div>
@@ -112,23 +113,27 @@
           </div>
           <div class="panel-body">
             <div class="row">
+              <div class="col-sm-12">
+                Using SERRF is easy. Just prepare your dataset the same format with the <a href="example dataset.xlsx">example dataset</a>, and upload it by clicking the "Choose File" button. When the dataset is successfully uploaded, simply select the normalization methods you need and click "Start Normalization". A few minutes later, you will have all your normalization results ready to download.
+              </div>
+             </div>
+             <br>
+            <div class="row">
               <div class="col-sm-6">
                 <div class="form-group">
                   <label for="input_file">Upload a Dataset</label>
                   <input id="input_file" type="file" class="form-control-file disable_in_progress" accept=".csv">
 
                 </div>
-                <div class="form-check">
+                <!--<div class="form-check">
                   <input class="form-check-input disable_in_progress" type="checkbox" value=""
                     id="input_example_file" />
                   <label class="form-check-label" for="input_example_file">
                     or Use the Example Dataset
                   </label>
-                </div>
+                </div>-->
               </div>
               <div class="col-sm-6">
-                <em>An example dataset is available for download <a href="#">here</a>.</em>
-
               </div>
             </div>
 
@@ -157,7 +162,7 @@
                     </div>
                   </td>
                   <td>Systematic Error Removal using Denoising Autoencoder</td>
-                  <td>paperlink</td>
+                  <td>(unpublished)</td>
                 </tr>
                 <tr>
                   <td>
@@ -167,7 +172,7 @@
                     </div>
                   </td>
                   <td>Systematic Error Removal using Random Forest</td>
-                  <td>paperlink</td>
+                  <td><a href="https://pubs.acs.org/doi/10.1021/acs.analchem.8b05592">paper link</a></td>
                 </tr>
                 <tr>
                   <td>
@@ -176,10 +181,10 @@
                       <label for="mtic">mTIC</label>
                     </div>
                   </td>
-                  <td>the Bird</td>
-                  <td>paperlink</td>
+                  <td>Normalize by metabolite Total Ion Current</td>
+                  <td><a href="https://pubmed.ncbi.nlm.nih.gov/27141305/">paper link</a></td>
                 </tr>
-                <tr>
+                <!--<tr>
                   <td>
                     <div>
                       <input type="checkbox" id="sum" name="sum" checked class='methods disable_in_progress'>
@@ -188,7 +193,7 @@
                   </td>
                   <td>Sum Normalization</td>
                   <td>paperlink</td>
-                </tr>
+                </tr>-->
               </tbody>
             </table>
             <form>
@@ -340,26 +345,25 @@
           $("#submit_job").prop("disabled", false);
           return;
         }
-
+        $(".disable_in_progress").attr("disabled", true);
+        $("#submit_job").text("Normalization in Process");
+        $("#submit_job").prop("disabled", true);
         loop_queue(false)
 
         var check_num_jobs_ahead_interval = setInterval(function () {
           if (num_jobs_ahead == 'checking') {
-
-            console.log("Hold on. I am checking if there is any jobs ahead of you.")
-            
+            $("#status").html("<p style='text-align:center;' class='text-danger'>Hold on. I am checking if there is any jobs ahead of you.Give me a few seconds.</p>")
           } else {
 
             if (num_jobs_ahead === 0) {
               console.log("Good! There is no jobs ahead of you. Your job will start right away.")
+              $("#status").html("<p style='text-align:center;' class='text-success'>Good! There is no jobs ahead of you. Your job will start right away.</p>")
               clearInterval(check_num_jobs_ahead_interval);
 
               // start analysis.
               {
 
-                $(".disable_in_progress").attr("disabled", true);
-                $("#submit_job").text("Normalization in Process");
-                $("#submit_job").prop("disabled", true);
+
                 $("#download_results_panel").show()
                 $("#waiting_result_text").text("(Waiting Results.)")
 
@@ -418,7 +422,7 @@
                     console.log("new_collection_id: " + new_collection_id)
                     if (obj.status[0] === 'success') {
                       unnormalized_methods = delete_element_from_array(normalization_method, 'raw')
-                      $("#status").text("Working on " + unnormalized_methods[0] + " normalization.")
+                      $("#status").html("<p style='text-align:center;' class='text-info'>Working on " + unnormalized_methods[0] + " normalization.</p>")
 
                       $("#" + unnormalized_methods[0] + "_status").html('<span class="rainbow">Calculating.</span>' + ' This may take a while. If failed, an error message will pop-up.')
 
@@ -471,9 +475,9 @@
                       normalized_datasets_bin_id_matching = {}
 
 
-                      window.onbeforeunload = function () {
+                      /*window.onbeforeunload = function () {
                         return 'Are you really want to perform the action?';
-                      }
+                      }*/
 
 
 
@@ -557,7 +561,7 @@
 
                                     if (index === array.length - 1) {
                                       if (record_id.length == normalization_method.length - 1) {
-                                        $("#waiting_result_text").text("(Almost Done.)")
+                                        $("#waiting_result_text").text("(Almost Done. Give me a second.)")
                                         // it means all josb has been finished. Kill the loop.
                                         // call R to download the results.
                                         ocpu.call("download_results", {
@@ -622,6 +626,7 @@
                                             console.log("Job Finished!")
                                             //$("#download_results_panel").show()
                                             $("#waiting_result_text").text("Congratulations! The normalization task is finished and all the results are ready for download.")
+                                            $( "#waiting_result_text" ).addClass( "text-success" );
                                             $(".disable_in_progress").attr("disabled", false);
                                             $("#status").text("")
                                             $("#submit_job").text("Start Normalization");
@@ -638,7 +643,7 @@
 
                                       } else {
                                         unnormalized_methods.shift();
-                                        $("#status").text("Working on " + unnormalized_methods[0] + ".")
+                                        $("#status").html("<p style='text-align:center;' class='text-info'>Working on " + unnormalized_methods[0] + " normalization.</p>")
 
                                         $("#" + unnormalized_methods[0] + "_status").html('<span class="rainbow">Calculating.</span>' + ' This may take a while. If failed, an error message will pop-up.')
                                         console.log("Another loop started for " + unnormalized_methods[0])
@@ -705,7 +710,7 @@
               var d = new Date();
               var e = formatDate(d);
               console.log("On " + e + ", There are ", num_jobs_ahead, " jobs ahead of you. A job usually takes several minutes to finish. Your job will start after they are finished")
-              
+
             }
 
           }
@@ -730,11 +735,11 @@
   <script src="local.min.js"></script>
   <!--  <script src="https://smtpjs.com/v3/smtp.js"></script>-->
 
-  <!--OpenCPU
-  <script src="opencpu-0.5-local.js"></script>-->
+  <!--OpenCPU-->
+  <script src="opencpu-0.5-local.js"></script>
 
-  <!-- -->
-<script src="//cdn.opencpu.org/opencpu-0.4.js"></script>
+  <!--<script src="//cdn.opencpu.org/opencpu-0.4.js"></script>-->
+
   <script src="https://sdk.amazonaws.com/js/aws-sdk-2.7.16.min.js"></script>
 
   <script src="myJS.min.js"></script>

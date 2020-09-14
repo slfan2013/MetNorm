@@ -137,7 +137,7 @@ serrfR = function(train = e[,p$sampleType == 'qc'],
   pred = parSapply(cl, X = 1:nrow(all), function(j,all,batch.,ranger, sampleType., time., num,corrs_train,corrs_target){
     # for(j in 1:nrow(all)){
     # j = j+1
-    print(j)
+    # print(j)
     normalized  = rep(0, ncol(all))
     qc_train_value = list()
     qc_predict_value = list()
@@ -392,7 +392,7 @@ if(!length(infinite_index)==0){
 e_norm = cbind(e_empty_sampleType, e_norm)
 e_norm = e_norm[,order(comb_p$sample_index)]
 
-comb_p = comb_p[order(sample_index),]
+comb_p = comb_p[order(comb_p$sample_index),]
 
 stopCluster(cl)
 gc()
